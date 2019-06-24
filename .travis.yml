@@ -1,0 +1,7 @@
+language: node_js
+node_js:
+  - "10"
+services:
+  - postgres
+  - redis-server
+before_install: ./config/db.sh starter_test
