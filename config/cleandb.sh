@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NAME='language_traineri'
+NAME='pb'
 USER='_user'
 
 if [ -n "$1" ]; then

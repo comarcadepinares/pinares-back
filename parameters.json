@@ -3,9 +3,9 @@
     "redisConnectionUri": "redis://localhost:6379/0",
     "postgres": {
         "host": "localhost",
-        "database": "starter",
-        "username": "starter_user",
-        "password": "starter_password",
+        "database": "pb",
+        "username": "pb_user",
+        "password": "pb_password",
         "port": 5432
     },
     "test": {
@@ -13,9 +13,9 @@
         "redisConnectionUri": "redis://localhost:6379/1",
         "postgres": {
             "host": "localhost",
-            "database": "starter_test",
-            "username": "starter_test_user",
-            "password": "starter_test_password",
+            "database": "pb_test",
+            "username": "pb_test_user",
+            "password": "pb_test_password",
             "port": 5432
         }
     },

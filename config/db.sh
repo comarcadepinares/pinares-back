@@ -1,6 +1,6 @@
 #!/bin/bash
 
-NAME='starter'
+NAME='pb'
 USER='_user'
 PASSWORD='_password'
 
