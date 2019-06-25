@@ -4,7 +4,7 @@ const baseExtended = require('./_BaseExtended')
 
 const TYPE_PHARMACY = 'pharmacy'
 const TYPE_MEDICAL_CENTER = 'medical center'
-const TYPE_BUTCHER_SHOP = "butcher's shop"
+const TYPE_BUTCHER_SHOP = "butchers shop"
 const TYPE_FISH_MARKET = 'fish market'
 const TYPE_MARKET = 'market'
 const TYPES = [TYPE_PHARMACY, TYPE_MEDICAL_CENTER, TYPE_BUTCHER_SHOP, TYPE_FISH_MARKET, TYPE_MARKET]
