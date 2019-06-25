@@ -59,4 +59,24 @@ describe('FUNCTIONAL API - INDEX', function () {
                 done()
             })
     })
+
+    it('should response 404 error', function (done) {
+        let error = new exception.NotFoundError()
+
+        request
+            .get('/not-existing-endpoint')
+            .set('X-device', 'aaa')
+            .expect(error.statusCode)
+            .end(function (err, res) {
+                expect(err).to.be.null
+                expect(res.body).to.deep.equal({
+                    'status': false,
+                    'error': {
+                        'code': error.code,
+                        'message': error.message
+                    }
+                })
+                done()
+            })
+    })
 })

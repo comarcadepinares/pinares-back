@@ -3,6 +3,11 @@
 const ExceptionPool = require('express-deliver').ExceptionPool
 
 const exceptionPool = new ExceptionPool({
+    NotFoundError: {
+        code: 404,
+        message: 'Route not found',
+        statusCode: 404
+    },
     ValidationFailed: {
         code: 1001,
         message: 'Authentication failed',
