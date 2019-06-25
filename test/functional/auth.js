@@ -25,7 +25,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .post('/auth/register')
-            .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
             .end(function (err, res) {
@@ -51,7 +50,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .post('/auth/register')
-            .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
             .end(function (err, res) {
@@ -80,7 +78,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .post('/auth/register')
-            .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
             .end(function (err, res) {
@@ -109,7 +106,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .post('/auth/register')
-            .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
             .end(function (err, res) {
@@ -138,7 +134,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .post('/auth/register')
-            .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
             .end(function (err, res) {
@@ -160,7 +155,6 @@ describe('FUNCTIONAL API - AUTH', function () {
     it('should response ok (register)', function (done) {
         request
             .post('/auth/register')
-            .set('X-device', 'aaa')
             .send(validUser)
             .expect(200)
             .end(function (err, res) {
@@ -179,7 +173,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .post('/auth/register')
-            .set('X-device', 'aaa')
             .send(validUser)
             .expect(error.statusCode)
             .end(function (err, res) {
@@ -208,7 +201,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .post('/auth/register')
-            .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
             .end(function (err, res) {
@@ -235,7 +227,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .post('/auth/login')
-            .set('X-device', 'aaa')
             .send(data)
             .expect(200)
             .end(function (err, res) {
@@ -257,7 +248,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .post('/auth/login')
-            .set('X-device', 'aaa')
             .send(data)
             .expect(200)
             .end(function (err, res) {
@@ -280,7 +270,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .post('/auth/login')
-            .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
             .end(function (err, res) {
@@ -308,7 +297,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .post('/auth/login')
-            .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
             .end(function (err, res) {
@@ -330,7 +318,6 @@ describe('FUNCTIONAL API - AUTH', function () {
     it('should response ok (logged)', function (done) {
         request
             .get('/logged')
-            .set('X-device', 'aaa')
             .set('Authorization', validToken)
             .expect(200)
             .end(function (err, res) {
@@ -345,7 +332,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .get('/logged')
-            .set('X-device', 'aaa')
             .set('Authorization', validToken + 'aaa')
             .expect(error.statusCode)
             .end(function (err, res) {
@@ -361,28 +347,6 @@ describe('FUNCTIONAL API - AUTH', function () {
             })
     })
 
-    it('should response ko (logged with invalid device)', function (done) {
-        let error = new exception.ValidationPublicKeyFailed()
-
-        request
-            .get('/logged')
-            .set('X-device', 'bbb')
-            .set('Authorization', validToken)
-            .expect(error.statusCode)
-            .end(function (err, res) {
-                expect(err).to.be.null
-                expect(res.body).to.deep.equal({
-                    'status': false,
-                    'error': {
-                        'code': error.code,
-                        'message': error.message
-                    }
-                })
-
-                done()
-            })
-    })
-
     it('should response ko (change password invalid new password)', function (done) {
         let error = new exception.ValidationPassword()
 
@@ -394,7 +358,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .post('/auth/change-password')
-            .set('X-device', 'aaa')
             .set('Authorization', validToken)
             .send(data)
             .expect(403)
@@ -423,7 +386,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .post('/auth/change-password')
-            .set('X-device', 'aaa')
             .set('Authorization', validToken)
             .send(data)
             .expect(200)
@@ -448,7 +410,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .post('/auth/login')
-            .set('X-device', 'aaa')
             .send(data)
             .expect(error.statusCode)
             .end(function (err, res) {
@@ -472,7 +433,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .get('/logged')
-            .set('X-device', 'aaa')
             .set('Authorization', validToken)
             .expect(error.statusCode)
             .end(function (err, res) {
@@ -492,7 +452,6 @@ describe('FUNCTIONAL API - AUTH', function () {
     it('should response ok (logged with new token)', function (done) {
         request
             .get('/logged')
-            .set('X-device', 'aaa')
             .set('Authorization', newValidToken)
             .expect(200)
             .end(function (err, res) {
@@ -511,7 +470,6 @@ describe('FUNCTIONAL API - AUTH', function () {
 
         request
             .post('/auth/login')
-            .set('X-device', 'aaa')
             .send(data)
             .expect(200)
             .end(function (err, res) {

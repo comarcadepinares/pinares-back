@@ -7,7 +7,7 @@ const exception = requireRoot('services/customExceptions')
 
 module.exports = {
 
-    async login (email, username, password, device) {
+    async login (email, username, password) {
         validateLogin(email, username, password)
 
         let query
@@ -21,8 +21,8 @@ module.exports = {
         }
 
         // generate Token
-        const token = jwt.generateAccessToken(user, device)
-        user.addToken(token, device)
+        const token = jwt.generateAccessToken(user)
+        user.addToken(token)
 
         return {
             token: token,
@@ -30,7 +30,7 @@ module.exports = {
         }
     },
 
-    async register (email, password, username, device) {
+    async register (email, password, username) {
         validateRegistration(email, password, username)
 
         // check if email exists
@@ -63,8 +63,8 @@ module.exports = {
         })
         user = await user.save()
 
-        const token = jwt.generateAccessToken(user, device)
-        user.addToken(token, device)
+        const token = jwt.generateAccessToken(user)
+        user.addToken(token)
 
         return {
             token: token,
@@ -72,7 +72,7 @@ module.exports = {
         }
     },
 
-    async changePassword (email, password, newPassword, device) {
+    async changePassword (email, password, newPassword) {
         validateChangePassword(email, password, newPassword)
 
         let user = await User.findOne({
@@ -92,8 +92,8 @@ module.exports = {
         user.removeAllTokens()
 
         // generate a new token
-        let token = jwt.generateAccessToken(user, device)
-        user.addToken(token, device)
+        let token = jwt.generateAccessToken(user)
+        user.addToken(token)
 
         return {
             token: token,

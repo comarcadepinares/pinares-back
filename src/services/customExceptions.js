@@ -18,11 +18,6 @@ const exceptionPool = new ExceptionPool({
         message: 'Authentication failed',
         statusCode: 403
     },
-    ValidationDeviceFailed: {
-        code: 1003,
-        message: 'You must set a device',
-        statusCode: 403
-    },
     ValidationTokenExpired: {
         code: 1004,
         message: 'Token expired',

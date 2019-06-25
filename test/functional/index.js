@@ -9,7 +9,6 @@ describe('FUNCTIONAL API - INDEX', function () {
     it('should response ok (status)', function (done) {
         request
             .get('/')
-            .set('X-device', 'aaa')
             .expect(200)
             .end(function (err, res) {
                 expect(err).to.be.null
@@ -26,26 +25,6 @@ describe('FUNCTIONAL API - INDEX', function () {
 
         request
             .get('/logged')
-            .set('X-device', 'aaa')
-            .expect(error.statusCode)
-            .end(function (err, res) {
-                expect(err).to.be.null
-                expect(res.body).to.deep.equal({
-                    'status': false,
-                    'error': {
-                        'code': error.code,
-                        'message': error.message
-                    }
-                })
-                done()
-            })
-    })
-
-    it('should response ko (not device header)', function (done) {
-        let error = new exception.ValidationDeviceFailed()
-
-        request
-            .get('/')
             .expect(error.statusCode)
             .end(function (err, res) {
                 expect(err).to.be.null
@@ -65,7 +44,6 @@ describe('FUNCTIONAL API - INDEX', function () {
 
         request
             .get('/not-existing-endpoint')
-            .set('X-device', 'aaa')
             .expect(error.statusCode)
             .end(function (err, res) {
                 expect(err).to.be.null

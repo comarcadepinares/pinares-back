@@ -35,14 +35,4 @@ module.exports = function (app) {
     // Parses http body
     app.use(bodyParser.urlencoded({ extended: true }))
     app.use(bodyParser.json())
-
-    // Check device
-    app.use(function (req, res, next) {
-        let device = req.get('X-device')
-
-        if (!device) { throw new customExceptions.ValidationDeviceFailed() }
-
-        req.device = device
-        next()
-    })
 }

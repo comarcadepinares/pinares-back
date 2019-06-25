@@ -12,19 +12,17 @@ module.exports = {
         const token = req.get('Authorization')
 
         // verify token
-        const tokenDecoded = await jwt.verify(token, req.device)
+        const tokenDecoded = await jwt.verify(token)
         if (!tokenDecoded ||
             !tokenDecoded.id ||
             !tokenDecoded.username ||
-            !tokenDecoded.role ||
-            !tokenDecoded.device ||
-            tokenDecoded.device !== req.device
+            !tokenDecoded.role
         ) {
             throw new exception.ValidationPublicKeyFailed()
         }
 
         // verify in redis
-        const userFromRedis = await verifyInRedis(token, tokenDecoded.id, tokenDecoded.device)
+        const userFromRedis = await verifyInRedis(token, tokenDecoded.id)
         if (!userFromRedis) {
             throw new exception.ValidationPublicKeyFailed()
         }
@@ -48,7 +46,7 @@ module.exports = {
     }
 }
 
-function verifyInRedis (tokenReceived, userId, device) {
+function verifyInRedis (tokenReceived, userId) {
     const redisKey = userId + ':tokens'
 
     return redisClient.getAsync(redisKey).then(tokensString => {
@@ -60,7 +58,7 @@ function verifyInRedis (tokenReceived, userId, device) {
             let existingToken = false
 
             for (const token of tokens) {
-                if (token.token === tokenReceived && token.device === device) {
+                if (token.token === tokenReceived) {
                     existingToken = true
                     break
                 }

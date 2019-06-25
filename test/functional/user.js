@@ -17,7 +17,6 @@ describe('FUNCTIONAL API - USER', function () {
 
         request
             .post('/auth/register')
-            .set('X-device', 'aaa')
             .send(data)
             .expect(200)
             .end(function (err, res) {
@@ -36,7 +35,6 @@ describe('FUNCTIONAL API - USER', function () {
     it('should response ok (profile)', function (done) {
         request
             .get('/user')
-            .set('X-device', 'aaa')
             .set('Authorization', validToken)
             .expect(200)
             .end(function (err, res) {
@@ -58,7 +56,6 @@ describe('FUNCTIONAL API - USER', function () {
 
         request
             .put('/user')
-            .set('X-device', 'aaa')
             .set('Authorization', validToken)
             .send(data)
             .expect(200)
@@ -79,7 +76,6 @@ describe('FUNCTIONAL API - USER', function () {
     it('should response ok (check profile updated)', function (done) {
         request
             .get('/user')
-            .set('X-device', 'aaa')
             .set('Authorization', validToken)
             .expect(200)
             .end(function (err, res) {

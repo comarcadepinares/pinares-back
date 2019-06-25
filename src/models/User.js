@@ -116,49 +116,20 @@ module.exports = (sequelize, DataTypes) => {
             return publicInfo
         },
 
-        getTokenByDevice (device) {
-            const redisKey = this.id + ':tokens'
-            const redisClient = redis.getClient()
-            return redisClient.getAsync(redisKey).then(tokensString => {
-                const tokens = JSON.parse(tokensString)
-                for (const token of tokens) {
-                    if (token.device === device) {
-                        return token
-                    }
-                }
-
-                return false
-            })
-        },
-
-        addToken (newToken, device) {
+        addToken (newToken) {
             const redisKey = this.id + ':tokens'
             const redisClient = redis.getClient()
             return redisClient.getAsync(redisKey)
                 .then(tokensString => {
                     let tokens = JSON.parse(tokensString)
 
-                    // add token
-                    let existingToken = false
-
                     if (!tokens || !tokens.length) {
                         tokens = []
-                    } else {
-                        for (const token of tokens) {
-                            if (token.device === device) {
-                                token.token = newToken
-                                existingToken = true
-                                break
-                            }
-                        }
                     }
 
-                    if (!existingToken) {
-                        tokens.push({
-                            token: newToken,
-                            device: device
-                        })
-                    }
+                    tokens.push({
+                        token: newToken
+                    })
 
                     return tokens
                 })
