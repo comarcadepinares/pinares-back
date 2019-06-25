@@ -21,6 +21,10 @@ function processPassword (user) {
     })
 }
 
+const TYPE_CLIENT = 'Client'
+const TYPE_ADMIN = 'SuperAdmin'
+const TYPES = [TYPE_CLIENT, TYPE_ADMIN]
+
 module.exports = (sequelize, DataTypes) => {
     let User = sequelize.define('user', Object.assign({
         id: {
@@ -44,8 +48,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         role: {
             type: DataTypes.ENUM,
-            values: ['Client', 'SuperAdmin'],
-            defaultValue: 'Client',
+            values: TYPES,
+            defaultValue: TYPE_CLIENT,
             allowNull: false
         },
         profile: {
