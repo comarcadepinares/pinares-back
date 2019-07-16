@@ -87,11 +87,14 @@ module.exports = (sequelize, DataTypes) => {
         }
     })
 
+    User.findByEmail = function (email) {
+        return this.findOne({ where: { email } })
+    }
+
     /*
      * INSTANCE METHODS
      */
     Object.assign(User.prototype, {
-
         comparePassword (candidatePassword) {
             return new Promise((resolve, reject) => {
                 bcrypt.compare(candidatePassword, this.password, function (err, isMatch) {
@@ -147,7 +150,11 @@ module.exports = (sequelize, DataTypes) => {
             const redisKey = this.id + ':tokens'
             const redisClient = redis.getClient()
             redisClient.del(redisKey)
-        }
+        },
+
+        isSuperAdmin () {
+            return this.role === USER_TYPE_ADMIN
+        },
     })
 
     return User

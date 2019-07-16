@@ -43,6 +43,14 @@ module.exports = {
         res.locals.user = user
 
         next()
+    },
+
+    superadmin (req, res, next) {
+        if (!res.locals.user || !res.locals.user.isSuperAdmin()) {
+            throw new exception.ValidationSuperadmin()
+        }
+
+        next()
     }
 }
 

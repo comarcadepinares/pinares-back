@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     Activity.associate = function (models) {
         Activity.belongsTo(models.User)
         Activity.belongsTo(models.Town)
+        Activity.belongsTo(models.ActivityTypes)
     }
 
     Activity.getAll = function ({ offset, limit }) {
