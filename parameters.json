@@ -24,5 +24,6 @@
     "expressDeliver":{
         "printErrorStack": false,
         "printInternalErrorData": false
-    }
+    },
+    "registerEnabled": true
 }

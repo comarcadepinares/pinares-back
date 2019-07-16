@@ -31,5 +31,24 @@ module.exports = (sequelize, DataTypes) => {
         return this.findOne({ where: { slug } })
     }
 
+
+    Object.assign(Town.prototype, {
+        getPublicInfo () {
+            let publicInfo = {
+                name: this.name,
+                slug: this.slug,
+                description: this.description,
+                image: this.image,
+                location: this.location,
+                address: this.address,
+                phone: this.phone,
+                email: this.email,
+                web: this.web
+            }
+
+            return publicInfo
+        },
+    })
+
     return Town
 }

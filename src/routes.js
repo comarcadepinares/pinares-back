@@ -3,10 +3,13 @@
 const express = require('express')
 const expressDeliver = require('express-deliver')
 const auth = requireRoot('services/auth/auth')
+const parameters = requireRoot('../parameters')
+const customExceptions = requireRoot('services/customExceptions')
 
 const mainController = require('./controllers/mainController')
 const authController = require('./controllers/authController')
 const userController = require('./controllers/userController')
+const townController = require('./controllers/townController')
 
 module.exports = function (app) {
     // Test routes
@@ -18,7 +21,9 @@ module.exports = function (app) {
     expressDeliver(authRouter)
     app.use('/auth', authRouter)
 
-    authRouter.post('/register', authController.register)
+    if (parameters.registerEnabled) {
+        authRouter.post('/register', authController.register)
+    }
     authRouter.post('/login', authController.login)
     authRouter.post('/change-password', auth.validate, authController.changePassword)
 
@@ -29,4 +34,23 @@ module.exports = function (app) {
 
     userRouter.get('/', auth.validate, userController.getProfile)
     userRouter.put('/', auth.validate, userController.setProfile)
+
+
+
+    // Town routes
+    let townRouter = express.Router({ mergeParams: true })
+    expressDeliver(townRouter, {
+        exceptionPool: customExceptions,
+        printErrorStack: parameters.expressDeliver.printErrorStack,
+        printInternalErrorData: parameters.expressDeliver.printInternalErrorData
+    })
+    townRouter.use(auth.validate)
+    townRouter.use(auth.superadmin)
+    app.use('/town', townRouter)
+
+    townRouter.get('/', townController.getAll)
+    // contentRouter.post('/', contentController.create)
+    // contentRouter.get('/:contentSlug', getContentMiddleware(), contentController.getOne)
+    // contentRouter.delete('/:contentSlug', getContentMiddleware(), contentController.remove)
+
 }
