@@ -7,7 +7,7 @@ global.requireRoot = function (name) {
 }
 
 // Basic includes
-const debug = require('debug')('app:root')
+const debug = require('debug')('app:index')
 debug('init')
 
 // bootstrap express

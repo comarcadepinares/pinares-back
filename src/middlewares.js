@@ -10,12 +10,6 @@ const appManager = requireRoot('./appManager')
 const parameters = requireRoot('../parameters')
 
 module.exports = function (app) {
-    expressDeliver(app, {
-        exceptionPool: customExceptions,
-        printErrorStack: parameters.expressDeliver.printErrorStack,
-        printInternalErrorData: parameters.expressDeliver.printInternalErrorData
-    })
-
     // Disable express header
     app.set('x-powered-by', false)
     app.set('etag', false)

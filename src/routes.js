@@ -15,7 +15,6 @@ module.exports = function (app) {
 
     // Auth routes
     let authRouter = express.Router({ mergeParams: true })
-    expressDeliver(authRouter)
     app.use('/auth', authRouter)
 
     authRouter.post('/register', authController.register)
@@ -24,7 +23,6 @@ module.exports = function (app) {
 
     // User routes
     let userRouter = express.Router({ mergeParams: true })
-    expressDeliver(userRouter)
     app.use('/user', userRouter)
 
     userRouter.get('/', auth.validate, userController.getProfile)
