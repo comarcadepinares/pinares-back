@@ -60,7 +60,6 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
 
             request
                 .post('/auth/login')
-                .set('X-device', 'aaa')
                 .send(data)
                 .expect(200)
                 .end(function(err,res){
@@ -81,7 +80,6 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
                 .expect(200)
                 .end(function (err, res) {
                     expect(err).to.be.null
-                    console.log(res.body)
                     expect(res.body.status).to.be.true
                     expect(res.body.data).to.have.property('towns')
                     expect(res.body.data.towns).to.be.an('Array').to.be.empty

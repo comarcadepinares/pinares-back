@@ -32,15 +32,8 @@ module.exports = function (app) {
     userRouter.get('/', auth.validate, userController.getProfile)
     userRouter.put('/', auth.validate, userController.setProfile)
 
-
-
     // Town routes
     let townRouter = express.Router({ mergeParams: true })
-    expressDeliver(townRouter, {
-        exceptionPool: customExceptions,
-        printErrorStack: parameters.expressDeliver.printErrorStack,
-        printInternalErrorData: parameters.expressDeliver.printInternalErrorData
-    })
     townRouter.use(auth.validate)
     townRouter.use(auth.superadmin)
     app.use('/town', townRouter)
