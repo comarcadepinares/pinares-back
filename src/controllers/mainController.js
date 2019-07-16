@@ -1,5 +1,4 @@
 'use strict'
-const debug = require('debug')('app:handlers')
 
 module.exports = {
 

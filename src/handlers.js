@@ -4,7 +4,7 @@ const exception = requireRoot('services/customExceptions')
 
 module.exports = function (app) {
     // 404
-    app.use(function(req, res, next){
+    app.use(function (req, res, next) {
         if (!res.locals.response) {
             next(new exception.NotFoundError())
         }
@@ -22,7 +22,7 @@ module.exports = function (app) {
     })
 
     // 50x
-    app.use(function expressDeliverErrorResponse(err, req, res, next) {
+    app.use(function expressDeliverErrorResponse (err, req, res, next) {
         if (!(err instanceof exception.CustomException)) {
             err = new exception.CustomException(err)
             err.code = 500

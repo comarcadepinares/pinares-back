@@ -71,9 +71,9 @@ const errors = [
 
 class CustomExceptionBase extends Error {}
 
-function getCustomException(defaults) {
+function getCustomException (defaults) {
     return class CustomException extends CustomExceptionBase {
-        constructor({ message=null, statusCode=null, name=null, code=null, error=null } = {}) {
+        constructor ({ message = null, statusCode = null, name = null, code = null, error = null } = {}) {
             super(message || defaults.message)
 
             this.statusCode = statusCode || defaults.statusCode
@@ -85,7 +85,9 @@ function getCustomException(defaults) {
 }
 
 const customExceptions = {}
-errors.forEach(error => customExceptions[error.name] = getCustomException(error))
+errors.forEach(error => {
+    customExceptions[error.name] = getCustomException(error)
+})
 
 module.exports = customExceptions
 module.exports.CustomException = CustomExceptionBase

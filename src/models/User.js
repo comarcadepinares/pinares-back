@@ -153,8 +153,8 @@ module.exports = (sequelize, DataTypes) => {
         },
 
         isSuperAdmin () {
-            return this.role === USER_TYPE_ADMIN
-        },
+            return this.role === TYPE_ADMIN
+        }
     })
 
     return User

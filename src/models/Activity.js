@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         geom: {
             type: DataTypes.GEOMETRY('LINESTRING', 4326),
             allowNull: true
-        },
+        }
     }, baseExtended), {
         timestamps: true,
         defaultScope: {

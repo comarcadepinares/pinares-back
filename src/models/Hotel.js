@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.ENUM,
             values: TYPES,
             allowNull: false
-        },
+        }
     }, baseExtended), {
         timestamps: true,
         defaultScope: {

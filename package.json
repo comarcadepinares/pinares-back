@@ -13,7 +13,8 @@
     "posttest": "npm run cleandb-test",
     "dev-test": "TEST_MODE=1 DEBUG=app* nodemon test/index.js",
     "dev": "DEBUG=app* nodemon index.js",
-    "lint": "eslint --ignore-path .gitignore src/"
+    "lint": "eslint --ignore-path .gitignore src/",
+    "lint-fix": "eslint --fix --ignore-path .gitignore src/"
   },
   "author": "",
   "license": "ISC",
