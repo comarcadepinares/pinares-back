@@ -12,5 +12,12 @@ module.exports = {
         for (let modelName in models) {
             await models[modelName].destroy({ where: {}})
         }
+    },
+
+    async getSuperAdminUser(email) {
+        const User = requireRoot('./appManager').models.User
+        let user = await User.findByEmail(email)
+        user.role = 'SuperAdmin'
+        user.save()
     }
 }

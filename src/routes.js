@@ -1,7 +1,6 @@
 'use strict'
 
 const express = require('express')
-const expressDeliver = require('express-deliver')
 const auth = requireRoot('services/auth/auth')
 const parameters = requireRoot('../parameters')
 const customExceptions = requireRoot('services/customExceptions')
@@ -18,7 +17,6 @@ module.exports = function (app) {
 
     // Auth routes
     let authRouter = express.Router({ mergeParams: true })
-    expressDeliver(authRouter)
     app.use('/auth', authRouter)
 
     if (parameters.registerEnabled) {
@@ -29,7 +27,6 @@ module.exports = function (app) {
 
     // User routes
     let userRouter = express.Router({ mergeParams: true })
-    expressDeliver(userRouter)
     app.use('/user', userRouter)
 
     userRouter.get('/', auth.validate, userController.getProfile)

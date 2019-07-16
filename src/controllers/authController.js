@@ -4,28 +4,43 @@ const authManager = requireRoot('managers/authManager')
 
 module.exports = {
 
-    async login (req, res) {
+    async login (req, res, next) {
         const email = req.body.email
         const password = req.body.password
         const username = req.body.username
 
-        return authManager.login(email, username, password)
+        try {
+            res.locals.response = await authManager.login(email, username, password)
+            next()
+        } catch (error) {
+            next(error)
+        }
     },
 
-    async register (req, res) {
+    async register (req, res, next) {
         const email = req.body.email
         const password = req.body.password
         const username = req.body.username
 
-        return authManager.register(email, password, username)
+        try {
+            res.locals.response = await authManager.register(email, password, username)
+            next()
+        } catch (error) {
+            next(error)
+        }
     },
 
-    async changePassword (req, res) {
+    async changePassword (req, res, next) {
         const email = req.body.email
         const password = req.body.password
         const newPassword = req.body.newPassword
 
-        return authManager.changePassword(email, password, newPassword)
+        try {
+            res.locals.response = await authManager.changePassword(email, password, newPassword)
+            next()
+        } catch (error) {
+            next(error)
+        }
     }
 
 }
