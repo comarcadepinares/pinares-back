@@ -45,5 +45,5 @@ module.exports = Object.assign({
     web: {
         type: Sequelize.STRING,
         allowNull: true
-    },
+    }
 }, base)
