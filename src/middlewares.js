@@ -3,11 +3,8 @@
 const helmet = require('helmet')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const expressDeliver = require('express-deliver')
 const customExceptions = requireRoot('services/customExceptions')
 const appManager = requireRoot('./appManager')
-
-const parameters = requireRoot('../parameters')
 
 module.exports = function (app) {
     // Disable express header

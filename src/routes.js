@@ -1,7 +1,6 @@
 'use strict'
 
 const express = require('express')
-const expressDeliver = require('express-deliver')
 const auth = requireRoot('services/auth/auth')
 
 const mainController = require('./controllers/mainController')
