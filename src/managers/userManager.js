@@ -2,7 +2,7 @@
 
 module.exports = {
 
-    async getProfile (user) {
+    getProfile (user) {
         return user.getPublicInfo()
     },
 

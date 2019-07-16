@@ -12,19 +12,25 @@ module.exports = {
         const token = req.get('Authorization')
 
         // verify token
-        const tokenDecoded = await jwt.verify(token)
+        let tokenDecoded
+        try {
+            tokenDecoded = await jwt.verify(token)
+        } catch (error) {
+            return next(error)
+        }
+
         if (!tokenDecoded ||
             !tokenDecoded.id ||
             !tokenDecoded.username ||
             !tokenDecoded.role
         ) {
-            throw new exception.ValidationPublicKeyFailed()
+            return next(new exception.ValidationPublicKeyFailed())
         }
 
         // verify in redis
         const userFromRedis = await verifyInRedis(token, tokenDecoded.id)
         if (!userFromRedis) {
-            throw new exception.ValidationPublicKeyFailed()
+            return next(new exception.ValidationPublicKeyFailed())
         }
 
         // get user from db
@@ -37,7 +43,7 @@ module.exports = {
         })
 
         if (!user) {
-            throw new exception.ValidationPublicKeyFailed()
+            return next(new exception.ValidationPublicKeyFailed())
         }
 
         res.locals.user = user
@@ -47,7 +53,7 @@ module.exports = {
 
     superadmin (req, res, next) {
         if (!res.locals.user || !res.locals.user.isSuperAdmin()) {
-            throw new exception.ValidationSuperadmin()
+            return next(new exception.ValidationSuperadmin())
         }
 
         next()
