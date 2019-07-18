@@ -21,9 +21,5 @@
     },
     "secret": "secret",
     "tokenLife": 86400,
-    "expressDeliver":{
-        "printErrorStack": false,
-        "printInternalErrorData": false
-    },
     "registerEnabled": true
 }
