@@ -4,13 +4,13 @@ const expect = require('chai').expect
 const request = require('supertest').agent(testApp)
 const faker = require('faker')
 const { slugify } = requireRoot('services/utils')
-const { getSuperAdminUser } = require('../helper')
+const { getSuperAdminUser, getPoint } = require('../helper')
 const exception = requireRoot('services/customExceptions')
 const debug = require('debug')('app:test:functional:index')
 
 let validUser
 let validToken
-let validContent
+let validTown
 const pagination = {
     page: 1,
     limit: 25
@@ -89,31 +89,74 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
                 })
         })
 
+        it('should response ok (add Town)', function (done) {
+            let validTown = {
+                name: faker.lorem.sentence(),
+                description: faker.lorem.sentence(),
+                location: getPoint(faker.address.latitude(), faker.address.longitude()),
+                address: faker.address.streetAddress(),
+                phone: faker.phone.phoneNumber(),
+                email: faker.internet.email(),
+                web: faker.internet.url()
+            }
 
+            request
+                .post('/town')
+                .set('Authorization', validToken)
+                .field('name', validTown.name)
+                .field('description', validTown.description)
+                .field('location', JSON.stringify(validTown.location))
+                .field('address', validTown.address)
+                .field('phone', validTown.phone)
+                .field('email', validTown.email)
+                .field('web', validTown.web)
+                .attach('image', __dirname + '/../fixtures/duruelo.png')
+                .expect(200)
+                .end(function (err, res) {
+                    validTown.slug = slugify(validTown.name)
+                    debug(res.body)
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.be.deep.equal(validTown)
+                    done()
+                })
+        })
 
-        // it('should response ok (add Content)', function (done) {
-        //     let data = validContent = {
-        //         name: faker.lorem.sentence()
-        //     }
+        it('should response ok (add Town without image)', function (done) {
+            let validTown = {
+                name: faker.lorem.sentence(),
+                description: faker.lorem.sentence(),
+                image: null,
+                location: getPoint(faker.address.latitude(), faker.address.longitude()),
+                address: faker.address.streetAddress(),
+                phone: faker.phone.phoneNumber(),
+                email: faker.internet.email(),
+                web: faker.internet.url()
+            }
 
-        //     request
-        //         .post('/content')
-        //         .set('X-device', 'aaa')
-        //         .set('Authorization', validToken)
-        //         .send(data)
-        //         .expect(200)
-        //         .end(function (err, res) {
-        //             validContent.slug = slugify(validContent.name)
-        //             expect(err).to.be.null
-        //             expect(res.body.status).to.be.true
-        //             expect(res.body.data).to.be.deep.equal(validContent)
-        //             done()
-        //         })
-        // })
+            request
+                .post('/town')
+                .set('Authorization', validToken)
+                .field('name', validTown.name)
+                .field('description', validTown.description)
+                .field('location', JSON.stringify(validTown.location))
+                .field('address', validTown.address)
+                .field('phone', validTown.phone)
+                .field('email', validTown.email)
+                .field('web', validTown.web)
+                .expect(200)
+                .end(function (err, res) {
+                    validTown.slug = slugify(validTown.name)
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.be.deep.equal(validTown)
+                    done()
+                })
+        })
 
         // it('should response ok (exists 1 content)', function (done) {
         //     request
-        //         .get('/content')
+        //         .get('/town')
         //         .set('X-device', 'aaa')
         //         .set('Authorization', validToken)
         //         .expect(200)
@@ -122,7 +165,7 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
         //             expect(res.body.status).to.be.true
         //             expect(res.body.data).to.have.property('contents')
         //             expect(res.body.data.contents).to.be.an('Array')
-        //             expect(res.body.data.contents[0]).to.be.deep.equal(validContent)
+        //             expect(res.body.data.contents[0]).to.be.deep.equal(validTown)
         //             expect(res.body.data).to.have.property('pagination')
         //             expect(res.body.data.pagination).to.be.deep.equal(pagination)
         //             done()
@@ -131,23 +174,23 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
 
         // it('should response ok (content exists)', function (done) {
         //     request
-        //         .get('/content/' + validContent.slug)
+        //         .get('/town/' + validTown.slug)
         //         .set('X-device', 'aaa')
         //         .set('Authorization', validToken)
         //         .expect(200)
         //         .end(function (err, res) {
         //             expect(err).to.be.null
         //             expect(res.body.status).to.be.true
-        //             expect(res.body.data).to.be.deep.equal(validContent)
+        //             expect(res.body.data).to.be.deep.equal(validTown)
         //             done()
         //         })
         // })
 
         // it('should response ko (content not exists)', function (done) {
-        //     let error = new exception.ContentNotExists()
+        //     let error = new exception.TownNotExists()
 
         //     request
-        //         .get('/content/' + validContent.slug + '-not-exists')
+        //         .get('/town/' + validTown.slug + '-not-exists')
         //         .set('X-device', 'aaa')
         //         .set('Authorization', validToken)
         //         .expect(error.statusCode)
@@ -165,13 +208,13 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
         // })
 
         // it('should response ok (add content with the same name)', function (done) {
-        //     let error = new exception.ValidationContentName()
+        //     let error = new exception.ValidationTownName()
 
         //     request
-        //         .post('/content')
+        //         .post('/town')
         //         .set('X-device', 'aaa')
         //         .set('Authorization', validToken)
-        //         .send(validContent)
+        //         .send(validTown)
         //         .expect(error.statusCode)
         //         .end(function (err, res) {
         //             expect(err).to.be.null
@@ -188,7 +231,7 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
 
         // it('should response ok (remove content)', function (done) {
         //     request
-        //         .delete('/content/' + validContent.slug)
+        //         .delete('/town/' + validTown.slug)
         //         .set('X-device', 'aaa')
         //         .set('Authorization', validToken)
         //         .expect(200)
@@ -201,10 +244,10 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
         // })
 
         // it('should response ko (getting removed content)', function (done) {
-        //     let error = new exception.ContentNotExists()
+        //     let error = new exception.TownNotExists()
 
         //     request
-        //         .get('/content/' + validContent.slug)
+        //         .get('/town/' + validTown.slug)
         //         .set('X-device', 'aaa')
         //         .set('Authorization', validToken)
         //         .expect(error.statusCode)
@@ -223,7 +266,7 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
 
         // it('should response ok (get contents after remove existing content)', function (done) {
         //     request
-        //         .get('/content')
+        //         .get('/town')
         //         .set('X-device', 'aaa')
         //         .set('Authorization', validToken)
         //         .expect(200)
