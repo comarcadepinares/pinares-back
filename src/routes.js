@@ -1,6 +1,8 @@
 'use strict'
 
 const express = require('express')
+const multer = require('multer')({ dest: '/tmp/uploads/' })
+
 const auth = requireRoot('services/auth/auth')
 const parameters = requireRoot('../parameters')
 const customExceptions = requireRoot('services/customExceptions')
@@ -39,8 +41,8 @@ module.exports = function (app) {
     app.use('/town', townRouter)
 
     townRouter.get('/', townController.getAll)
-    // contentRouter.post('/', contentController.create)
-    // contentRouter.get('/:contentSlug', getContentMiddleware(), contentController.getOne)
-    // contentRouter.delete('/:contentSlug', getContentMiddleware(), contentController.remove)
+    townRouter.post('/', multer.single('image'), townController.create)
+    // townRouter.get('/:contentSlug', getContentMiddleware(), townController.getOne)
+    // townRouter.delete('/:contentSlug', getContentMiddleware(), townController.remove)
 
 }
