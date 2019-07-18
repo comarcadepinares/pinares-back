@@ -1,6 +1,7 @@
 'use strict'
 
 const exception = requireRoot('services/customExceptions')
+const debug = require('debug')('app:handlers')
 
 module.exports = function (app) {
     // 404
@@ -24,9 +25,11 @@ module.exports = function (app) {
     // 50x
     app.use(function expressDeliverErrorResponse (err, req, res, next) {
         if (!(err instanceof exception.CustomException)) {
-            err = new exception.CustomException(err)
+            err = new exception.SomethingWasWrong(err)
             err.code = 500
         }
+
+        debug(err)
 
         const response = {
             status: false,
