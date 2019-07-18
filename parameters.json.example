@@ -8,6 +8,29 @@
         "password": "pb_password",
         "port": 5432
     },
+    "secret": "secret",
+    "tokenLife": 86400,
+    "expressDeliver":{
+        "printErrorStack": false,
+        "printInternalErrorData": false
+    },
+    "registerEnabled": true,
+    "aws": {
+        "s3-full-access": {
+            "accessKeyId": "",
+            "secretAccessKey": "",
+            "region": "",
+            "bucket": "",
+            "ACL": ""
+        },
+        "s3-readd-only": {
+            "accessKeyId": "",
+            "secretAccessKey": "",
+            "region": "",
+            "bucket": "",
+            "ACL": ""
+        }
+    },
     "test": {
         "listenPort": 8001,
         "redisConnectionUri": "redis://localhost:6379/1",
@@ -18,8 +41,5 @@
             "password": "pb_test_password",
             "port": 5432
         }
-    },
-    "secret": "secret",
-    "tokenLife": 86400,
-    "registerEnabled": true
+    }
 }
