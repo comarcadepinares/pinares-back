@@ -7,7 +7,7 @@ const debug = require('debug')('app:services:s3')
 const VALID_FORMATS = ['jpg', 'jpeg', 'png']
 
 module.exports = class S3 {
-    constructor(AWSParameters) {
+    constructor (AWSParameters) {
         this.s3 = new AWS.S3({
             accessKeyId: AWSParameters.accessKeyId,
             secretAccessKey: AWSParameters.secretAccessKey,
@@ -26,11 +26,12 @@ module.exports = class S3 {
      * @param {Array.<string>|string} imagePaths
      * @param {string} folder a folder name inside your AWS S3 bucket (it will be created if not exists)
      */
-    async uploadToS3(imagePaths, folder) {
-        if (Array.isArray(imagePaths))
+    async uploadToS3 (imagePaths, folder) {
+        if (Array.isArray(imagePaths)) {
             return this.uploadMultiple(imagePaths, folder)
-        else
+        } else {
             return this.upload(imagePaths, folder)
+        }
     }
 
     /**
@@ -39,12 +40,11 @@ module.exports = class S3 {
      * @param {string} filePath
      * @param {string} folder
      */
-    async upload(filePath, folder) {
+    async upload (filePath, folder) {
         const s3FilePath = this.getS3FullPath(filePath, folder)
 
         if (!await this.exists(s3FilePath)) {
             return new Promise((resolve, reject) => {
-
                 const fileStream = fs.createReadStream(filePath)
 
                 const params = {
@@ -53,12 +53,12 @@ module.exports = class S3 {
                 }
 
                 if (this.ACL) {
-                    params.ACL = this.ACL;
+                    params.ACL = this.ACL
                 }
 
                 const opts = {
                     queueSize: 10, // upload parts in parallel
-                    partSize: 1024 * 1024 * 10 //10Mb
+                    partSize: 1024 * 1024 * 10 // 10Mb
                 }
 
                 this.s3.upload(params, opts)
@@ -88,7 +88,7 @@ module.exports = class S3 {
      * @param {string} folder
      * @returns {Promise.<Array>} of S3 files in the same input order
      */
-    uploadMultiple(filePaths, folder) {
+    uploadMultiple (filePaths, folder) {
         return Promise.all(
             filePaths.map(filePath => this.upload(filePath, folder))
         )
@@ -100,11 +100,10 @@ module.exports = class S3 {
      * @param {string} s3FilePath
      * @return {Promise.<boolean>}}
      */
-    exists(s3FilePath) {
+    exists (s3FilePath) {
         return new Promise((resolve, reject) => {
             this.s3.headObject({ Key: s3FilePath }, function (err, data) {
-                if (!err)
-                    resolve(true)
+                if (!err) { resolve(true) }
 
                 resolve(false)
             })
@@ -117,13 +116,14 @@ module.exports = class S3 {
      * @param {string} filePath
      * @param {string} folder
      */
-    getS3FullPath(filePath, folder = 'node-rekognition-folder/') {
+    getS3FullPath (filePath, folder = 'dev/') {
         const fileName = new Date().getTime() + '-' + filePath.split('/').pop()
         const extension = fileName.split('.').pop().toLowerCase()
 
-        if (VALID_FORMATS.indexOf(extension) !== -1)
+        if (VALID_FORMATS.indexOf(extension) !== -1) {
             return folder + fileName
-        else
+        } else {
             throw new Error('Invalid file format')
+        }
     }
 }

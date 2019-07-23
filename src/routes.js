@@ -44,5 +44,4 @@ module.exports = function (app) {
     townRouter.post('/', multer.single('image'), townController.create)
     // townRouter.get('/:contentSlug', getContentMiddleware(), townController.getOne)
     // townRouter.delete('/:contentSlug', getContentMiddleware(), townController.remove)
-
 }
