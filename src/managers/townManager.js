@@ -40,7 +40,6 @@ module.exports = {
                 } catch (error) {
                     throw new exception.ValueError('Wrong location parameter')
                 }
-
             }
 
             location = addSRID(location)
@@ -91,7 +90,6 @@ module.exports = {
                 } catch (error) {
                     throw new exception.ValueError('Wrong location parameter')
                 }
-
             }
 
             location = addSRID(location)

@@ -3,9 +3,8 @@
 const express = require('express')
 const multer = require('multer')({ dest: '/tmp/uploads/' })
 
-const auth = requireRoot('services/auth/auth')
 const parameters = requireRoot('../parameters')
-const customExceptions = requireRoot('services/customExceptions')
+const auth = requireRoot('services/auth/auth')
 
 const getTownMiddleware = require('./middlewares/getTown')
 
