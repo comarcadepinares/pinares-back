@@ -15,21 +15,13 @@
         "printInternalErrorData": false
     },
     "registerEnabled": true,
-    "aws": {
-        "s3-full-access": {
-            "accessKeyId": "",
-            "secretAccessKey": "",
-            "region": "",
-            "bucket": "",
-            "ACL": ""
-        },
-        "s3-readd-only": {
-            "accessKeyId": "",
-            "secretAccessKey": "",
-            "region": "",
-            "bucket": "",
-            "ACL": ""
-        }
+    "AWS": {
+        "accessKeyId": "",
+        "secretAccessKey": "",
+        "region": "",
+        "bucket": "",
+        "ACL": "",
+        "folder": ""
     },
     "test": {
         "listenPort": 8001,
