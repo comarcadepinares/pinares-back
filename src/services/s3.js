@@ -77,10 +77,7 @@ module.exports = class S3 {
             })
         } else {
             debug('file-already-exists')
-            return {
-                Bucket: this.AWSParameters.bucket,
-                Key: s3FilePath
-            }
+            return false
         }
     }
 

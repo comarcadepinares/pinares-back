@@ -2,12 +2,11 @@
 
 const fs = require('fs')
 const Promise = require('bluebird')
-const sharp = require('sharp')
 const S3 = require('./s3')
 const parameters = requireRoot('../parameters')
 const debug = require('debug')('app:services:processMediaUpload')
 
-const s3 = new S3(parameters.aws)
+const s3 = new S3(parameters.AWS)
 const IMAGE_VALID_MIMETYPES = ['image/jpeg', 'image/png']
 
 module.exports = {
@@ -29,10 +28,7 @@ module.exports = {
         if (images && images.length) {
             // upload all images to S3
             const imagesPaths = images.map(image => image.path)
-            debug('x',imagesPaths)
             const s3Images = await s3.uploadToS3(imagesPaths, folder)
-
-            debug('y', s3Images)
 
             // remove images
             images.forEach(image => {
@@ -68,16 +64,4 @@ function addExtension (image) {
     image.path = newImagePath
 
     return image
-}
-
-function addS3DataToImages (s3Images, images) {
-    let imagesWithS3 = []
-
-    for (let i in s3Images) {
-        images[i].s3 = s3Images[i].key
-        images[i].url = s3Images[i].Location
-        imagesWithS3.push(images[i])
-    }
-
-    return imagesWithS3
 }
