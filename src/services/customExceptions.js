@@ -2,6 +2,12 @@
 
 const errors = [
     {
+        name: 'SomethingWasWrong',
+        code: 666,
+        message: 'Something was wrong',
+        statusCode: 500
+    },
+    {
         name: 'NotFoundError',
         code: 404,
         message: 'Route not found',
@@ -44,22 +50,58 @@ const errors = [
         statusCode: 403
     },
     {
+        name: 'ValidationSuperadmin',
+        code: 1008,
+        message: 'You do not have enough permissions',
+        statusCode: 403
+    },
+    {
         name: 'ValidationRegistration',
-        code: 1500,
+        code: 1100,
         message: 'something was wrong',
         statusCode: 403
     },
     {
         name: 'ValidationLogin',
-        code: 1501,
+        code: 1101,
         message: 'Invalid login',
         statusCode: 403
     },
     {
         name: 'ValidationChangePassword',
-        code: 1502,
+        code: 1102,
         message: 'Invalid change password',
         statusCode: 403
+    },
+    {
+        name: 'ValueError',
+        code: 1200,
+        message: 'Wrong value',
+        statusCode: 400
+    },
+    {
+        name: 'UploadingImagesError',
+        code: 1201,
+        message: 'Error uploading images',
+        statusCode: 400
+    },
+    {
+        name: 'EntityNotExists',
+        code: 1202,
+        message: 'Entity does not exists',
+        statusCode: 404
+    },
+    {
+        name: 'EntityAlreadyExists',
+        code: 1203,
+        message: 'Entity already exists',
+        statusCode: 400
+    },
+    {
+        name: 'ValidationTown',
+        code: 1400,
+        message: 'Name, description and location are required',
+        statusCode: 400
     },
     {
         name: 'DatabaseError',

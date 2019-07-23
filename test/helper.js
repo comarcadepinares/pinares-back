@@ -1,6 +1,7 @@
 'use strict'
 
 const redis = requireRoot('services/db/redis')
+const { getPoint } = requireRoot('services/geom')
 
 module.exports = {
     async cleanDb () {
@@ -19,5 +20,9 @@ module.exports = {
         let user = await User.findByEmail(email)
         user.role = 'SuperAdmin'
         user.save()
+    },
+
+    getPoint(latitude, longitude) {
+        return getPoint([parseFloat(latitude), parseFloat(longitude)])
     }
 }

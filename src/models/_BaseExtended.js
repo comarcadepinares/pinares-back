@@ -24,19 +24,19 @@ module.exports = Object.assign({
     },
     image: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
     location: {
         type: Sequelize.GEOMETRY('POINT', 4326),
-        allowNull: false
+        allowNull: true
     },
     address: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
     phone: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
     },
     email: {
         type: Sequelize.STRING,
