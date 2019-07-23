@@ -20,12 +20,8 @@ module.exports = {
     },
 
     async update (req, res, next) {
-        // try {
-            res.locals.response = await townManager.update(res.locals.town, req.body, req.file)
-            next()
-        // } catch (error) {
-        //     next(error)
-        // }
+        res.locals.response = await townManager.update(res.locals.town, req.body, req.file)
+        next()
     },
 
     async getOne (req, res, next) {
