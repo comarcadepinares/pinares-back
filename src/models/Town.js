@@ -33,6 +33,9 @@ module.exports = (sequelize, DataTypes) => {
 
     Object.assign(Town.prototype, {
         getPublicInfo () {
+            const location = this.location
+            delete location.crs
+
             let publicInfo = {
                 name: this.name,
                 slug: this.slug,

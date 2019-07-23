@@ -89,8 +89,8 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
                 })
         })
 
-        it('should response ok (add Town)', function (done) {
-            let validTown = {
+        it.skip('should response ok (add Town)', function (done) {
+            validTown = {
                 name: faker.lorem.sentence(),
                 description: faker.lorem.sentence(),
                 location: getPoint(faker.address.latitude(), faker.address.longitude()),
@@ -124,7 +124,7 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
         })
 
         it('should response ok (add Town without image)', function (done) {
-            let validTown = {
+            validTown = {
                 name: faker.lorem.sentence(),
                 description: faker.lorem.sentence(),
                 location: getPoint(faker.address.latitude(), faker.address.longitude()),
@@ -155,132 +155,168 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
                 })
         })
 
-        // it('should response ok (exists 1 content)', function (done) {
-        //     request
-        //         .get('/town')
-        //         .set('X-device', 'aaa')
-        //         .set('Authorization', validToken)
-        //         .expect(200)
-        //         .end(function (err, res) {
-        //             expect(err).to.be.null
-        //             expect(res.body.status).to.be.true
-        //             expect(res.body.data).to.have.property('contents')
-        //             expect(res.body.data.contents).to.be.an('Array')
-        //             expect(res.body.data.contents[0]).to.be.deep.equal(validTown)
-        //             expect(res.body.data).to.have.property('pagination')
-        //             expect(res.body.data.pagination).to.be.deep.equal(pagination)
-        //             done()
-        //         })
-        // })
+        it('should response ok (exists 1)', function (done) {
+            request
+                .get('/town')
+                .set('Authorization', validToken)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.have.property('towns')
+                    expect(res.body.data.towns).to.be.an('Array')
+                    expect(res.body.data.towns[0]).to.be.deep.equal(validTown)
+                    expect(res.body.data).to.have.property('pagination')
+                    expect(res.body.data.pagination).to.be.deep.equal(pagination)
+                    done()
+                })
+        })
 
-        // it('should response ok (content exists)', function (done) {
-        //     request
-        //         .get('/town/' + validTown.slug)
-        //         .set('X-device', 'aaa')
-        //         .set('Authorization', validToken)
-        //         .expect(200)
-        //         .end(function (err, res) {
-        //             expect(err).to.be.null
-        //             expect(res.body.status).to.be.true
-        //             expect(res.body.data).to.be.deep.equal(validTown)
-        //             done()
-        //         })
-        // })
+        it('should response ok (content exists)', function (done) {
+            request
+                .get('/town/' + validTown.slug)
+                .set('Authorization', validToken)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.be.deep.equal(validTown)
+                    done()
+                })
+        })
 
-        // it('should response ko (content not exists)', function (done) {
-        //     let error = new exception.TownNotExists()
+        it('should response ko (not exists)', function (done) {
+            let error = new exception.EntityNotExists()
 
-        //     request
-        //         .get('/town/' + validTown.slug + '-not-exists')
-        //         .set('X-device', 'aaa')
-        //         .set('Authorization', validToken)
-        //         .expect(error.statusCode)
-        //         .end(function (err, res) {
-        //             expect(err).to.be.null
-        //             expect(res.body).to.deep.equal({
-        //                 "status": false,
-        //                 "error": {
-        //                     "code": error.code,
-        //                     "message": error.message
-        //                 }
-        //             })
-        //             done()
-        //         })
-        // })
+            request
+                .get('/town/' + validTown.slug + '-not-exists')
+                .set('Authorization', validToken)
+                .expect(error.statusCode)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body).to.deep.equal({
+                        "status": false,
+                        "error": {
+                            "code": error.code,
+                            "message": error.message
+                        }
+                    })
+                    done()
+                })
+        })
 
-        // it('should response ok (add content with the same name)', function (done) {
-        //     let error = new exception.ValidationTownName()
+        it('should response ok (add town with the same name)', function (done) {
+            let error = new exception.EntityAlreadyExists()
 
-        //     request
-        //         .post('/town')
-        //         .set('X-device', 'aaa')
-        //         .set('Authorization', validToken)
-        //         .send(validTown)
-        //         .expect(error.statusCode)
-        //         .end(function (err, res) {
-        //             expect(err).to.be.null
-        //             expect(res.body).to.deep.equal({
-        //                 "status": false,
-        //                 "error": {
-        //                     "code": error.code,
-        //                     "message": error.message
-        //                 }
-        //             })
-        //             done()
-        //         })
-        // })
+            request
+                .post('/town')
+                .set('Authorization', validToken)
+                .send(validTown)
+                .expect(error.statusCode)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body).to.deep.equal({
+                        "status": false,
+                        "error": {
+                            "code": error.code,
+                            "message": error.message
+                        }
+                    })
+                    done()
+                })
+        })
 
-        // it('should response ok (remove content)', function (done) {
-        //     request
-        //         .delete('/town/' + validTown.slug)
-        //         .set('X-device', 'aaa')
-        //         .set('Authorization', validToken)
-        //         .expect(200)
-        //         .end(function (err, res) {
-        //             expect(err).to.be.null
-        //             expect(res.body.status).to.be.true
-        //             expect(res.body.data).to.be.true
-        //             done()
-        //         })
-        // })
+        it('should response ok (update Town)', function (done) {
+            validTown.description = faker.lorem.sentence()
+            validTown.location = getPoint(faker.address.latitude(), faker.address.longitude())
+            validTown.address = faker.address.streetAddress()
+            validTown.phone = faker.phone.phoneNumber()
+            validTown.email = faker.internet.email()
+            validTown.web = faker.internet.url()
 
-        // it('should response ko (getting removed content)', function (done) {
-        //     let error = new exception.TownNotExists()
+            request
+                .put('/town/' + validTown.slug)
+                .set('Authorization', validToken)
+                .field('description', validTown.description)
+                .field('location', JSON.stringify(validTown.location))
+                .field('address', validTown.address)
+                .field('phone', validTown.phone)
+                .field('email', validTown.email)
+                .field('web', validTown.web)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.be.deep.equal(validTown)
+                    done()
+                })
+        })
 
-        //     request
-        //         .get('/town/' + validTown.slug)
-        //         .set('X-device', 'aaa')
-        //         .set('Authorization', validToken)
-        //         .expect(error.statusCode)
-        //         .end(function (err, res) {
-        //             expect(err).to.be.null
-        //             expect(res.body).to.deep.equal({
-        //                 "status": false,
-        //                 "error": {
-        //                     "code": error.code,
-        //                     "message": error.message
-        //                 }
-        //             })
-        //             done()
-        //         })
-        // })
+        it('should response ok (update 2 fields)', function (done) {
+            validTown.phone = faker.phone.phoneNumber()
+            validTown.email = null
 
-        // it('should response ok (get contents after remove existing content)', function (done) {
-        //     request
-        //         .get('/town')
-        //         .set('X-device', 'aaa')
-        //         .set('Authorization', validToken)
-        //         .expect(200)
-        //         .end(function (err, res) {
-        //             expect(err).to.be.null
-        //             expect(res.body.status).to.be.true
-        //             expect(res.body.data).to.have.property('contents')
-        //             expect(res.body.data.contents).to.be.an('Array').to.be.empty
-        //             expect(res.body.data).to.have.property('pagination')
-        //             expect(res.body.data.pagination).to.be.deep.equal(pagination)
-        //             done()
-        //         })
-        // })
+            request
+                .put('/town/' + validTown.slug)
+                .set('Authorization', validToken)
+                .send(validTown)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.be.deep.equal(validTown)
+                    done()
+                })
+        })
+
+        it('should response ok (remove town)', function (done) {
+            request
+                .delete('/town/' + validTown.slug)
+                .set('Authorization', validToken)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.be.true
+                    done()
+                })
+        })
+
+        it('should response ko (getting removed content)', function (done) {
+            let error = new exception.EntityNotExists()
+
+            request
+                .get('/town/' + validTown.slug)
+                .set('Authorization', validToken)
+                .expect(error.statusCode)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body).to.deep.equal({
+                        "status": false,
+                        "error": {
+                            "code": error.code,
+                            "message": error.message
+                        }
+                    })
+                    done()
+                })
+        })
+
+        it('should response ok (get towns after remove existing content)', function (done) {
+            request
+                .get('/town')
+                .set('Authorization', validToken)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.have.property('towns')
+                    expect(res.body.data.towns).to.be.an('Array').to.be.empty
+                    expect(res.body.data).to.have.property('pagination')
+                    expect(res.body.data.pagination).to.be.deep.equal(pagination)
+                    done()
+                })
+        })
     })
 
 })

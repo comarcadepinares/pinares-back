@@ -33,12 +33,17 @@ module.exports = {
             throw new exception.ValidationTown()
         }
 
-        if (typeof location === 'string') {
-            try {
-                location = JSON.parse(location)
-            } catch (error) {
-                throw new exception.ValueError('Wrong location parameter')
+        if (location) {
+            if (typeof location === 'string') {
+                try {
+                    location = JSON.parse(location)
+                } catch (error) {
+                    throw new exception.ValueError('Wrong location parameter')
+                }
+
             }
+
+            location = addSRID(location)
         }
 
         if (image) {
@@ -48,8 +53,7 @@ module.exports = {
                 // upload to S3
                 image = await processMediaUpload.images(image, parameters.AWS.folder)
                 image = image[0]
-            } catch (err) {
-                debug('ERROR', err)
+            } catch (error) {
                 throw new exception.UploadingImagesError()
             }
         }
@@ -59,19 +63,71 @@ module.exports = {
             slug: slugify(name),
             description,
             image,
-            location: addSRID(location),
+            location,
             address,
             phone,
             email,
             web
         })
 
-        town = await town.save()
+        try {
+            town = await town.save()
+        } catch (error) {
+            if (error.name === 'SequelizeUniqueConstraintError') {
+                throw new exception.EntityAlreadyExists()
+            }
+            debug(error)
+            throw new exception.SomethingWasWrong()
+        }
 
         return town.getPublicInfo()
     },
 
-    async getOne (town) {
+    async update (town, { description, location, address, phone, email, web }, image) {
+        if (location) {
+            if (typeof location === 'string') {
+                try {
+                    location = JSON.parse(location)
+                } catch (error) {
+                    throw new exception.ValueError('Wrong location parameter')
+                }
+
+            }
+
+            location = addSRID(location)
+        }
+
+        if (image) {
+            image = await processMediaUpload.preprocessImages([image])
+
+            try {
+                // upload to S3
+                image = await processMediaUpload.images(image, parameters.AWS.folder)
+                image = image[0]
+            } catch (error) {
+                throw new exception.UploadingImagesError()
+            }
+        }
+
+        town.description = description
+        town.image = image || null
+        town.location = location
+        town.address = address
+        town.phone = phone
+        town.email = email
+        town.web = web
+
+        try {
+            town = await town.save()
+        } catch (error) {
+            debug(error)
+            throw new exception.SomethingWasWrong()
+        }
+
+        return town.getPublicInfo()
+    },
+
+    getOne (town) {
         return town.getPublicInfo()
     },
 

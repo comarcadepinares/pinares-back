@@ -19,11 +19,22 @@ module.exports = {
         }
     },
 
-    async getOne (req, res) {
-        return townManager.getOne(res.locals.content)
+    async update (req, res, next) {
+        // try {
+            res.locals.response = await townManager.update(res.locals.town, req.body, req.file)
+            next()
+        // } catch (error) {
+        //     next(error)
+        // }
     },
 
-    async remove (req, res) {
-        return townManager.remove(res.locals.content)
+    async getOne (req, res, next) {
+        res.locals.response = townManager.getOne(res.locals.town)
+        next()
+    },
+
+    async remove (req, res, next) {
+        res.locals.response = await townManager.remove(res.locals.town)
+        next()
     }
 }

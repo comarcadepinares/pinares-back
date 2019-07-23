@@ -86,6 +86,18 @@ const errors = [
         statusCode: 400
     },
     {
+        name: 'EntityNotExists',
+        code: 1202,
+        message: 'Entity does not exists',
+        statusCode: 404
+    },
+    {
+        name: 'EntityAlreadyExists',
+        code: 1203,
+        message: 'Entity already exists',
+        statusCode: 400
+    },
+    {
         name: 'ValidationTown',
         code: 1400,
         message: 'Name, description and location are required',

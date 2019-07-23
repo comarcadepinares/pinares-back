@@ -7,6 +7,8 @@ const auth = requireRoot('services/auth/auth')
 const parameters = requireRoot('../parameters')
 const customExceptions = requireRoot('services/customExceptions')
 
+const getTownMiddleware = require('./middlewares/getTown')
+
 const mainController = require('./controllers/mainController')
 const authController = require('./controllers/authController')
 const userController = require('./controllers/userController')
@@ -42,6 +44,7 @@ module.exports = function (app) {
 
     townRouter.get('/', townController.getAll)
     townRouter.post('/', multer.single('image'), townController.create)
-    // townRouter.get('/:contentSlug', getContentMiddleware(), townController.getOne)
-    // townRouter.delete('/:contentSlug', getContentMiddleware(), townController.remove)
+    townRouter.put('/:slug', multer.single('image'), getTownMiddleware(), townController.update)
+    townRouter.get('/:slug', getTownMiddleware(), townController.getOne)
+    townRouter.delete('/:slug', getTownMiddleware(), townController.remove)
 }
