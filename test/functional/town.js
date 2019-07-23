@@ -113,10 +113,11 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
                 .attach('image', __dirname + '/../fixtures/duruelo.png')
                 .expect(200)
                 .end(function (err, res) {
-                    validTown.slug = slugify(validTown.name)
-                    debug(res.body)
                     expect(err).to.be.null
                     expect(res.body.status).to.be.true
+                    validTown.slug = slugify(validTown.name)
+                    expect(res.body.data).to.have.property('image')
+                    validTown.image = res.body.data.image
                     expect(res.body.data).to.be.deep.equal(validTown)
                     done()
                 })
@@ -126,12 +127,12 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
             let validTown = {
                 name: faker.lorem.sentence(),
                 description: faker.lorem.sentence(),
-                image: null,
                 location: getPoint(faker.address.latitude(), faker.address.longitude()),
                 address: faker.address.streetAddress(),
                 phone: faker.phone.phoneNumber(),
                 email: faker.internet.email(),
-                web: faker.internet.url()
+                web: faker.internet.url(),
+                image: null
             }
 
             request
@@ -146,9 +147,9 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
                 .field('web', validTown.web)
                 .expect(200)
                 .end(function (err, res) {
-                    validTown.slug = slugify(validTown.name)
                     expect(err).to.be.null
                     expect(res.body.status).to.be.true
+                    validTown.slug = slugify(validTown.name)
                     expect(res.body.data).to.be.deep.equal(validTown)
                     done()
                 })
