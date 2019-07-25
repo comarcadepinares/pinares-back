@@ -16,7 +16,7 @@ const pagination = {
     limit: 25
 }
 
-describe.only('FUNCTIONAL API - CONTENT', function(){
+describe('FUNCTIONAL API - CONTENT', function(){
     before(async function() {
         validUser = {
             "email": faker.internet.email().toLowerCase(),
@@ -113,6 +113,8 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
                     expect(err).to.be.null
                     expect(res.body.status).to.be.true
                     validTown.slug = slugify(validTown.name)
+                    expect(res.body.data).to.have.property('id')
+                    validTown.id = res.body.data.id
                     expect(res.body.data).to.have.property('image')
                     validTown.image = res.body.data.image
                     expect(res.body.data).to.be.deep.equal(validTown)
@@ -147,6 +149,8 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
                     expect(err).to.be.null
                     expect(res.body.status).to.be.true
                     validTown.slug = slugify(validTown.name)
+                    expect(res.body.data).to.have.property('id')
+                    validTown.id = res.body.data.id
                     expect(res.body.data).to.be.deep.equal(validTown)
                     done()
                 })

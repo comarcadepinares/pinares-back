@@ -83,6 +83,10 @@ module.exports = {
     },
 
     async update (town, { description, location, address, phone, email, web }, image) {
+        if (!description || !location) {
+            throw new exception.ValidationTown()
+        }
+
         if (location) {
             if (typeof location === 'string') {
                 try {

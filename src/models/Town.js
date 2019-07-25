@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         indexes: [
             {
                 unique: true,
+                fields: ['slug']
+            },
+            {
+                unique: true,
                 fields: ['name', 'userId']
             }
         ]
@@ -37,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
             delete location.crs
 
             let publicInfo = {
+                id: this.id,
                 name: this.name,
                 slug: this.slug,
                 description: this.description,
