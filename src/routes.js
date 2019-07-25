@@ -7,11 +7,13 @@ const parameters = requireRoot('../parameters')
 const auth = requireRoot('services/auth/auth')
 
 const getTownMiddleware = require('./middlewares/getTown')
+const getHotelMiddleware = require('./middlewares/getHotel')
 
 const mainController = require('./controllers/mainController')
 const authController = require('./controllers/authController')
 const userController = require('./controllers/userController')
 const townController = require('./controllers/townController')
+const hotelController = require('./controllers/hotelController')
 
 module.exports = function (app) {
     // Test routes
@@ -45,14 +47,13 @@ module.exports = function (app) {
     townRouter.put('/:slug', auth.validate, auth.superadmin, multer.single('image'), getTownMiddleware(), townController.update)
     townRouter.delete('/:slug', auth.validate, auth.superadmin, getTownMiddleware(), townController.remove)
 
-    // // Hotel routes
-    // let hotelRouter = express.Router({ mergeParams: true })
-    // hotelRouter.use(auth.validate)
-    // app.use('/hotel', hotelRouter)
+    // Hotel routes
+    let hotelRouter = express.Router({ mergeParams: true })
+    app.use('/hotel', hotelRouter)
 
-    // hotelRouter.get('/', hotelRouter.getAll)
-    // hotelRouter.get('/:slug', getTownMiddleware(), hotelRouter.getOne)
-    // hotelRouter.post('/', auth.superadmin, multer.single('image'), hotelRouter.create)
-    // hotelRouter.put('/:slug', auth.superadmin, multer.single('image'), getTownMiddleware(), hotelRouter.update)
-    // hotelRouter.delete('/:slug', auth.superadmin, getTownMiddleware(), hotelRouter.remove)
+    hotelRouter.get('/', hotelController.getAll)
+    hotelRouter.get('/:slug', getHotelMiddleware(), hotelController.getOne)
+    hotelRouter.post('/', auth.validate, multer.single('image'), hotelController.create)
+    hotelRouter.put('/:slug', auth.validate, multer.single('image'), getHotelMiddleware(), hotelController.update)
+    hotelRouter.delete('/:slug', auth.validate, getHotelMiddleware(), hotelController.remove)
 }

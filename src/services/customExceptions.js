@@ -104,6 +104,12 @@ const errors = [
         statusCode: 400
     },
     {
+        name: 'ValidationHotel',
+        code: 1401,
+        message: 'Name, type, townId, description and location are required',
+        statusCode: 400
+    },
+    {
         name: 'DatabaseError',
         code: 2001,
         message: 'something was wrong',
