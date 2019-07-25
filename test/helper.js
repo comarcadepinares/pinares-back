@@ -15,10 +15,10 @@ module.exports = {
         }
     },
 
-    async getSuperAdminUser(email) {
+    async changeUserRole(email, role='SuperAdmin') {
         const User = requireRoot('./appManager').models.User
         let user = await User.findByEmail(email)
-        user.role = 'SuperAdmin'
+        user.role = role
         user.save()
     },
 

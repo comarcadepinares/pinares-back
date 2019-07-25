@@ -37,13 +37,22 @@ module.exports = function (app) {
 
     // Town routes
     let townRouter = express.Router({ mergeParams: true })
-    townRouter.use(auth.validate)
-    townRouter.use(auth.superadmin)
     app.use('/town', townRouter)
 
     townRouter.get('/', townController.getAll)
-    townRouter.post('/', multer.single('image'), townController.create)
-    townRouter.put('/:slug', multer.single('image'), getTownMiddleware(), townController.update)
     townRouter.get('/:slug', getTownMiddleware(), townController.getOne)
-    townRouter.delete('/:slug', getTownMiddleware(), townController.remove)
+    townRouter.post('/', auth.validate, auth.superadmin, multer.single('image'), townController.create)
+    townRouter.put('/:slug', auth.validate, auth.superadmin, multer.single('image'), getTownMiddleware(), townController.update)
+    townRouter.delete('/:slug', auth.validate, auth.superadmin, getTownMiddleware(), townController.remove)
+
+    // // Hotel routes
+    // let hotelRouter = express.Router({ mergeParams: true })
+    // hotelRouter.use(auth.validate)
+    // app.use('/hotel', hotelRouter)
+
+    // hotelRouter.get('/', hotelRouter.getAll)
+    // hotelRouter.get('/:slug', getTownMiddleware(), hotelRouter.getOne)
+    // hotelRouter.post('/', auth.superadmin, multer.single('image'), hotelRouter.create)
+    // hotelRouter.put('/:slug', auth.superadmin, multer.single('image'), getTownMiddleware(), hotelRouter.update)
+    // hotelRouter.delete('/:slug', auth.superadmin, getTownMiddleware(), hotelRouter.remove)
 }
