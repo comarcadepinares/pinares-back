@@ -8,7 +8,7 @@
     "init-test": "PGUSER=postgres ./config/db.sh pb_test",
     "cleandb": "PGUSER=postgres ./config/cleandb.sh pb",
     "cleandb-test": "PGUSER=postgres ./config/cleandb.sh pb_test",
-    "test": "TEST_MODE=1 DEBUG=app* node test/index.js; npm run lint;",
+    "test": "TEST_MODE=1 node test/index.js; npm run lint;",
     "dev-test": "TEST_MODE=1 DEBUG=app* nodemon test/index.js",
     "dev": "DEBUG=app* nodemon index.js",
     "lint": "eslint --ignore-path .gitignore src/",

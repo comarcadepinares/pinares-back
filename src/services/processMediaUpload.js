@@ -4,7 +4,6 @@ const fs = require('fs')
 const Promise = require('bluebird')
 const S3 = require('./s3')
 const parameters = requireRoot('../parameters')
-const debug = require('debug')('app:services:processMediaUpload')
 
 const AWSParameters = process.env.PB_AWS_CONF ? JSON.parse(process.env.PB_AWS_CONF) : parameters.AWS
 const s3 = new S3(AWSParameters)

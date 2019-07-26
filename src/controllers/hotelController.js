@@ -2,7 +2,6 @@
 
 const hotelManager = require('../managers/hotelManager')
 const pagination = require('../services/pagination')
-const debug = require('debug')('app:controllers:hotel')
 
 module.exports = {
     async getAll (req, res, next) {

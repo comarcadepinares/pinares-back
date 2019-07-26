@@ -2,11 +2,11 @@
 
 const base = require('./_Base')
 
-const TYPE_HOTEL = 'hotel'
-const TYPE_COTTAGE = 'cottage'
-const TYPE_HOSTEL = 'hostel'
-const TYPE_CAMPING = 'camping'
-const TYPES = [TYPE_HOTEL, TYPE_COTTAGE, TYPE_HOSTEL, TYPE_CAMPING]
+// const TYPE_HOTEL = 'hotel'
+// const TYPE_COTTAGE = 'cottage'
+// const TYPE_HOSTEL = 'hostel'
+// const TYPE_CAMPING = 'camping'
+// const TYPES = [TYPE_HOTEL, TYPE_COTTAGE, TYPE_HOSTEL, TYPE_CAMPING]
 
 module.exports = (sequelize, DataTypes) => {
     let ActivityType = sequelize.define('activity_type', Object.assign({

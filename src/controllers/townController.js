@@ -2,7 +2,6 @@
 
 const townManager = require('../managers/townManager')
 const pagination = require('../services/pagination')
-const debug = require('debug')('app:controllers:town')
 
 module.exports = {
     async getAll (req, res, next) {
