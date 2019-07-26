@@ -2,10 +2,14 @@ language: node_js
 node_js:
   - "10"
 services:
+  - postgresql
   - redis-server
 addons:
   postgresql: 11
   apt:
     packages:
-    - postgresql-11-postgis-2.5
+      - postgresql-11
+      - postgresql-client-11
+      - postgresql-11-postgis-2.5
+      - postgresql-11-postgis-2.5-scripts
 before_install: npm run init-test
