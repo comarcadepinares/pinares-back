@@ -12,4 +12,4 @@ addons:
       - postgresql-client-10
       - postgresql-10-postgis-2.4
       - postgresql-10-postgis-2.4-scripts
-before_install: npm run init-test
+before_script: npm run init-test
