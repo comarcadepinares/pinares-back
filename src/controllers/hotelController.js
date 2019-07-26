@@ -20,8 +20,12 @@ module.exports = {
     },
 
     async update (req, res, next) {
-        res.locals.response = await hotelManager.update(res.locals.hotel, req.body, req.file)
-        next()
+        try {
+            res.locals.response = await hotelManager.update(res.locals.hotel, req.body, req.file)
+            next()
+        } catch (error) {
+            next(error)
+        }
     },
 
     async getOne (req, res, next) {

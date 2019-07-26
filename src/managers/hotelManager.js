@@ -84,6 +84,7 @@ module.exports = {
     },
 
     async update (hotel, { type, townId, description, location, address, phone, email, web }, image) {
+        debug(type, townId, description, location)
         if (!description || !location || !Hotel.TYPES.includes(type) || !townId) {
             throw new exception.ValidationHotel()
         }

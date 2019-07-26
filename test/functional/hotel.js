@@ -17,7 +17,7 @@ const pagination = {
     limit: 25
 }
 
-describe.only('FUNCTIONAL API - CONTENT', function(){
+describe('FUNCTIONAL API - CONTENT', function(){
     before(async function() {
         validUser = {
             "email": faker.internet.email().toLowerCase(),
@@ -240,7 +240,7 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
                 {
                     name: faker.lorem.sentence(),
                     type: 'hotel',
-                    townId: validTown.id - 1,
+                    townId: 0,
                     description: faker.lorem.sentence(),
                     location: getPoint(faker.address.latitude(), faker.address.longitude()),
                     address: faker.address.streetAddress(),
@@ -351,6 +351,8 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
         })
 
         it('should response ok (add hotel with the same name)', function (done) {
+            validHotel.townId = validTown.id
+
             const error = new exception.EntityAlreadyExists()
 
             request
@@ -371,239 +373,221 @@ describe.only('FUNCTIONAL API - CONTENT', function(){
                 })
         })
 
-    //     it('should response ok (update Hotel)', function (done) {
-    //         validHotel.description = faker.lorem.sentence()
-    //         validHotel.location = getPoint(faker.address.latitude(), faker.address.longitude())
-    //         validHotel.address = faker.address.streetAddress()
-    //         validHotel.phone = faker.phone.phoneNumber()
-    //         validHotel.email = faker.internet.email()
-    //         validHotel.web = faker.internet.url()
+        it('should response ok (update Hotel)', function (done) {
+            validHotel.townId = validTown.id
 
-    //         request
-    //             .put('/hotel/' + validHotel.slug)
-    //             .set('Authorization', validToken)
-    //             .field('description', validHotel.description)
-    //             .field('location', JSON.stringify(validHotel.location))
-    //             .field('address', validHotel.address)
-    //             .field('phone', validHotel.phone)
-    //             .field('email', validHotel.email)
-    //             .field('web', validHotel.web)
-    //             .expect(200)
-    //             .end(function (err, res) {
-    //                 expect(err).to.be.null
-    //                 expect(res.body.status).to.be.true
-    //                 expect(res.body.data).to.be.deep.equal(validHotel)
-    //                 done()
-    //             })
-    //     })
+            validHotel.description = faker.lorem.sentence()
+            validHotel.location = getPoint(faker.address.latitude(), faker.address.longitude())
+            validHotel.address = faker.address.streetAddress()
+            validHotel.phone = faker.phone.phoneNumber()
+            validHotel.email = faker.internet.email()
+            validHotel.web = faker.internet.url()
 
-    //     it('should response ok (update 2 fields)', function (done) {
-    //         validHotel.phone = faker.phone.phoneNumber()
-    //         validHotel.email = null
+            request
+                .put('/hotel/' + validHotel.slug)
+                .set('Authorization', validToken)
+                .send(validHotel)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    delete validHotel.townId
+                    expect(res.body.data).to.be.deep.equal(validHotel)
+                    done()
+                })
+        })
 
-    //         request
-    //             .put('/hotel/' + validHotel.slug)
-    //             .set('Authorization', validToken)
-    //             .send(validHotel)
-    //             .expect(200)
-    //             .end(function (err, res) {
-    //                 expect(err).to.be.null
-    //                 expect(res.body.status).to.be.true
-    //                 expect(res.body.data).to.be.deep.equal(validHotel)
-    //                 done()
-    //             })
-    //     })
+        it('should response ok (update 2 fields)', function (done) {
+            validHotel.townId = validTown.id
 
-    //     it('should fail updating without token', function (done) {
-    //         const error = new exception.ValidationPublicKeyFailed()
+            validHotel.phone = faker.phone.phoneNumber()
+            validHotel.email = null
 
-    //         request
-    //             .put('/hotel/' + validHotel.slug)
-    //             .send(validHotel)
-    //             .expect(error.statusCode)
-    //             .end(function (err, res) {
-    //                 expect(err).to.be.null
-    //                 expect(res.body).to.deep.equal({
-    //                     "status": false,
-    //                     "error": {
-    //                         "code": error.code,
-    //                         "message": error.message
-    //                     }
-    //                 })
-    //                 done()
-    //             })
-    //     })
+            request
+                .put('/hotel/' + validHotel.slug)
+                .set('Authorization', validToken)
+                .send(validHotel)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    delete validHotel.townId
+                    expect(res.body.data).to.be.deep.equal(validHotel)
+                    done()
+                })
+        })
 
-    //     it('should fail deleting hotel without token', function (done) {
-    //         const error = new exception.ValidationPublicKeyFailed()
+        it('should fail updating without token', function (done) {
+            const error = new exception.ValidationPublicKeyFailed()
 
-    //         request
-    //             .delete('/hotel/' + validHotel.slug)
-    //             .expect(error.statusCode)
-    //             .end(function (err, res) {
-    //                 expect(err).to.be.null
-    //                 expect(res.body).to.deep.equal({
-    //                     "status": false,
-    //                     "error": {
-    //                         "code": error.code,
-    //                         "message": error.message
-    //                     }
-    //                 })
-    //                 done()
-    //             })
-    //     })
+            request
+                .put('/hotel/' + validHotel.slug)
+                .send(validHotel)
+                .expect(error.statusCode)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body).to.deep.equal({
+                        "status": false,
+                        "error": {
+                            "code": error.code,
+                            "message": error.message
+                        }
+                    })
+                    done()
+                })
+        })
 
-    //     it('should response ok (remove hotel)', function (done) {
-    //         request
-    //             .delete('/hotel/' + validHotel.slug)
-    //             .set('Authorization', validToken)
-    //             .expect(200)
-    //             .end(function (err, res) {
-    //                 expect(err).to.be.null
-    //                 expect(res.body.status).to.be.true
-    //                 expect(res.body.data).to.be.true
-    //                 done()
-    //             })
-    //     })
+        it('should fail deleting hotel without token', function (done) {
+            const error = new exception.ValidationPublicKeyFailed()
 
-    //     it('should response ko (getting removed content)', function (done) {
-    //         let error = new exception.EntityNotExists()
+            request
+                .delete('/hotel/' + validHotel.slug)
+                .expect(error.statusCode)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body).to.deep.equal({
+                        "status": false,
+                        "error": {
+                            "code": error.code,
+                            "message": error.message
+                        }
+                    })
+                    done()
+                })
+        })
 
-    //         request
-    //             .get('/hotel/' + validHotel.slug)
-    //             .expect(error.statusCode)
-    //             .end(function (err, res) {
-    //                 expect(err).to.be.null
-    //                 expect(res.body).to.deep.equal({
-    //                     "status": false,
-    //                     "error": {
-    //                         "code": error.code,
-    //                         "message": error.message
-    //                     }
-    //                 })
-    //                 done()
-    //             })
-    //     })
+        it('should response ok (remove hotel)', function (done) {
+            request
+                .delete('/hotel/' + validHotel.slug)
+                .set('Authorization', validToken)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.be.true
+                    done()
+                })
+        })
 
-    //     it('should response ok (get hotels after remove existing content)', function (done) {
-    //         request
-    //             .get('/hotel')
-    //             .expect(200)
-    //             .end(function (err, res) {
-    //                 expect(err).to.be.null
-    //                 expect(res.body.status).to.be.true
-    //                 expect(res.body.data).to.have.property('hotels')
-    //                 expect(res.body.data.hotels).to.be.an('Array').to.be.empty
-    //                 expect(res.body.data).to.have.property('pagination')
-    //                 expect(res.body.data.pagination).to.be.deep.equal(pagination)
-    //                 done()
-    //             })
-    //     })
+        it('should response ko (getting removed content)', function (done) {
+            let error = new exception.EntityNotExists()
+
+            request
+                .get('/hotel/' + validHotel.slug)
+                .expect(error.statusCode)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body).to.deep.equal({
+                        "status": false,
+                        "error": {
+                            "code": error.code,
+                            "message": error.message
+                        }
+                    })
+                    done()
+                })
+        })
+
+        it('should response ok (get hotels after remove existing content)', function (done) {
+            request
+                .get('/hotel')
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.have.property('hotels')
+                    expect(res.body.data.hotels).to.be.an('Array').to.be.empty
+                    expect(res.body.data).to.have.property('pagination')
+                    expect(res.body.data.pagination).to.be.deep.equal(pagination)
+                    done()
+                })
+        })
     })
 
-    // describe('client', function() {
-    //     before(async function() {
-    //         await changeUserRole(validUser.email, 'Client')
-    //     })
+    describe('client', function() {
+        before(async function() {
+            await changeUserRole(validUser.email, 'Client')
+        })
 
-    //     it('should response ok (login with email)',function(done){
-    //         let data = {
-    //             "email": validUser.email,
-    //             "password": validUser.password,
-    //         }
+        it('should response ok (login with email)',function(done){
+            let data = {
+                "email": validUser.email,
+                "password": validUser.password,
+            }
 
-    //         request
-    //             .post('/auth/login')
-    //             .send(data)
-    //             .expect(200)
-    //             .end(function(err,res){
-    //                 expect(err).to.be.null
-    //                 expect(res.body.status).to.be.true
-    //                 expect(res.body.data.user.email).to.be.equal(validUser.email)
-    //                 expect(res.body.data.user.username).to.be.equal(validUser.username)
-    //                 expect(res.body.data.token).to.be.an('string')
-    //                 validToken = res.body.data.token
-    //                 done()
-    //             })
-    //     })
+            request
+                .post('/auth/login')
+                .send(data)
+                .expect(200)
+                .end(function(err,res){
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data.user.email).to.be.equal(validUser.email)
+                    expect(res.body.data.user.username).to.be.equal(validUser.username)
+                    expect(res.body.data.token).to.be.an('string')
+                    validToken = res.body.data.token
+                    done()
+                })
+        })
 
-    //     it('should fail adding Hotel with client token', function (done) {
-    //         validHotel = {
-    //             name: faker.lorem.sentence(),
-    //             description: faker.lorem.sentence(),
-    //             location: getPoint(faker.address.latitude(), faker.address.longitude()),
-    //             address: faker.address.streetAddress(),
-    //             phone: faker.phone.phoneNumber(),
-    //             email: faker.internet.email(),
-    //             web: faker.internet.url(),
-    //             image: null
-    //         }
+        it('should work adding Hotel', function (done) {
+            validHotel.townId = validTown.id
+            validHotel.name = faker.lorem.sentence(),
 
-    //         const error = new exception.ValidationSuperadmin()
+            request
+                .post('/hotel')
+                .set('Authorization', validToken)
+                .send(validHotel)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    validHotel.slug = slugify(validHotel.name)
+                    expect(res.body.data).to.have.property('id')
+                    validHotel.id = res.body.data.id
+                    expect(res.body.data).to.have.property('image')
+                    validHotel.image = res.body.data.image
+                    delete validHotel.townId
+                    expect(res.body.data).to.be.deep.equal(validHotel)
+                    done()
+                })
+        })
 
-    //         request
-    //             .post('/hotel')
-    //             .set('Authorization', validToken)
-    //             .field('name', validHotel.name)
-    //             .field('description', validHotel.description)
-    //             .field('location', JSON.stringify(validHotel.location))
-    //             .field('address', validHotel.address)
-    //             .field('phone', validHotel.phone)
-    //             .field('email', validHotel.email)
-    //             .field('web', validHotel.web)
-    //             .expect(error.statusCode)
-    //             .end(function (err, res) {
-    //                 expect(err).to.be.null
-    //                 expect(res.body).to.deep.equal({
-    //                     "status": false,
-    //                     "error": {
-    //                         "code": error.code,
-    //                         "message": error.message
-    //                     }
-    //                 })
-    //                 done()
-    //             })
-    //     })
+        it('should work updating hotel', function (done) {
+            validHotel.townId = validTown.id
 
-    //     it('should fail updating without token', function (done) {
-    //         const error = new exception.ValidationSuperadmin()
+            validHotel.description = faker.lorem.sentence()
+            validHotel.location = getPoint(faker.address.latitude(), faker.address.longitude())
+            validHotel.address = faker.address.streetAddress()
+            validHotel.phone = faker.phone.phoneNumber()
+            validHotel.email = faker.internet.email()
+            validHotel.web = faker.internet.url()
 
-    //         request
-    //             .put('/hotel/' + validHotel.slug)
-    //             .set('Authorization', validToken)
-    //             .send(validHotel)
-    //             .expect(error.statusCode)
-    //             .end(function (err, res) {
-    //                 expect(err).to.be.null
-    //                 expect(res.body).to.deep.equal({
-    //                     "status": false,
-    //                     "error": {
-    //                         "code": error.code,
-    //                         "message": error.message
-    //                     }
-    //                 })
-    //                 done()
-    //             })
-    //     })
+            request
+                .put('/hotel/' + validHotel.slug)
+                .set('Authorization', validToken)
+                .send(validHotel)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    delete validHotel.townId
+                    expect(res.body.data).to.be.deep.equal(validHotel)
+                    done()
+                })
+        })
 
-    //     it('should fail deleting hotel without token', function (done) {
-    //         const error = new exception.ValidationSuperadmin()
-
-    //         request
-    //             .delete('/hotel/' + validHotel.slug)
-    //             .set('Authorization', validToken)
-    //             .expect(error.statusCode)
-    //             .end(function (err, res) {
-    //                 expect(err).to.be.null
-    //                 expect(res.body).to.deep.equal({
-    //                     "status": false,
-    //                     "error": {
-    //                         "code": error.code,
-    //                         "message": error.message
-    //                     }
-    //                 })
-    //                 done()
-    //             })
-    //     })
-    // })
+        it('should work deleting hotel', function (done) {
+            request
+                .delete('/hotel/' + validHotel.slug)
+                .set('Authorization', validToken)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.be.true
+                    done()
+                })
+        })
+    })
 })
