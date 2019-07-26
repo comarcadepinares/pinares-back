@@ -14,7 +14,4 @@ addons:
       - postgresql-10-postgis-2.4
       - postgresql-10-postgis-2.4-scripts
 before_script:
-  - sudo service postgresql restart
-  - psql -c 'create database db_test;' -U postgres
-  - psql -c "CREATE USER $NAME$USER;"
   - npm run init-test
