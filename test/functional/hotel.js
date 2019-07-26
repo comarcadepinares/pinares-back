@@ -115,46 +115,48 @@ describe('FUNCTIONAL API - CONTENT', function(){
                 })
         })
 
-        it.skip('should response ok (add Hotel)', function (done) {
-            validHotel = {
-                name: faker.lorem.sentence(),
-                townId: validTown.id,
-                type: 'hotel',
-                description: faker.lorem.sentence(),
-                location: getPoint(faker.address.latitude(), faker.address.longitude()),
-                address: faker.address.streetAddress(),
-                phone: faker.phone.phoneNumber(),
-                email: faker.internet.email(),
-                web: faker.internet.url()
-            }
+        if (process.env.PB_AWS_CONF) {
+            it('should response ok (add Hotel)', function (done) {
+                validHotel = {
+                    name: faker.lorem.sentence(),
+                    townId: validTown.id,
+                    type: 'hotel',
+                    description: faker.lorem.sentence(),
+                    location: getPoint(faker.address.latitude(), faker.address.longitude()),
+                    address: faker.address.streetAddress(),
+                    phone: faker.phone.phoneNumber(),
+                    email: faker.internet.email(),
+                    web: faker.internet.url()
+                }
 
-            request
-                .post('/hotel')
-                .set('Authorization', validToken)
-                .field('name', validHotel.name)
-                .field('townId', validHotel.townId)
-                .field('type', validHotel.type)
-                .field('description', validHotel.description)
-                .field('location', JSON.stringify(validHotel.location))
-                .field('address', validHotel.address)
-                .field('phone', validHotel.phone)
-                .field('email', validHotel.email)
-                .field('web', validHotel.web)
-                .attach('image', __dirname + '/../fixtures/duruelo.png')
-                .expect(200)
-                .end(function (err, res) {
-                    expect(err).to.be.null
-                    expect(res.body.status).to.be.true
-                    validHotel.slug = slugify(validHotel.name)
-                    expect(res.body.data).to.have.property('id')
-                    validHotel.id = res.body.data.id
-                    expect(res.body.data).to.have.property('image')
-                    validHotel.image = res.body.data.image
-                    delete validHotel.townId
-                    expect(res.body.data).to.be.deep.equal(validHotel)
-                    done()
-                })
-        })
+                request
+                    .post('/hotel')
+                    .set('Authorization', validToken)
+                    .field('name', validHotel.name)
+                    .field('townId', validHotel.townId)
+                    .field('type', validHotel.type)
+                    .field('description', validHotel.description)
+                    .field('location', JSON.stringify(validHotel.location))
+                    .field('address', validHotel.address)
+                    .field('phone', validHotel.phone)
+                    .field('email', validHotel.email)
+                    .field('web', validHotel.web)
+                    .attach('image', __dirname + '/../fixtures/duruelo.png')
+                    .expect(200)
+                    .end(function (err, res) {
+                        expect(err).to.be.null
+                        expect(res.body.status).to.be.true
+                        validHotel.slug = slugify(validHotel.name)
+                        expect(res.body.data).to.have.property('id')
+                        validHotel.id = res.body.data.id
+                        expect(res.body.data).to.have.property('image')
+                        validHotel.image = res.body.data.image
+                        delete validHotel.townId
+                        expect(res.body.data).to.be.deep.equal(validHotel)
+                        done()
+                    })
+            })
+        }
 
         it('should response ok (add Hotel without image)', function (done) {
             validHotel = {

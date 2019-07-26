@@ -86,41 +86,43 @@ describe('FUNCTIONAL API - CONTENT', function(){
                 })
         })
 
-        it.skip('should response ok (add Town)', function (done) {
-            validTown = {
-                name: faker.lorem.sentence(),
-                description: faker.lorem.sentence(),
-                location: getPoint(faker.address.latitude(), faker.address.longitude()),
-                address: faker.address.streetAddress(),
-                phone: faker.phone.phoneNumber(),
-                email: faker.internet.email(),
-                web: faker.internet.url()
-            }
+        if (process.env.PB_AWS_CONF) {
+            it('should response ok (add Town)', function (done) {
+                validTown = {
+                    name: faker.lorem.sentence(),
+                    description: faker.lorem.sentence(),
+                    location: getPoint(faker.address.latitude(), faker.address.longitude()),
+                    address: faker.address.streetAddress(),
+                    phone: faker.phone.phoneNumber(),
+                    email: faker.internet.email(),
+                    web: faker.internet.url()
+                }
 
-            request
-                .post('/town')
-                .set('Authorization', validToken)
-                .field('name', validTown.name)
-                .field('description', validTown.description)
-                .field('location', JSON.stringify(validTown.location))
-                .field('address', validTown.address)
-                .field('phone', validTown.phone)
-                .field('email', validTown.email)
-                .field('web', validTown.web)
-                .attach('image', __dirname + '/../fixtures/duruelo.png')
-                .expect(200)
-                .end(function (err, res) {
-                    expect(err).to.be.null
-                    expect(res.body.status).to.be.true
-                    validTown.slug = slugify(validTown.name)
-                    expect(res.body.data).to.have.property('id')
-                    validTown.id = res.body.data.id
-                    expect(res.body.data).to.have.property('image')
-                    validTown.image = res.body.data.image
-                    expect(res.body.data).to.be.deep.equal(validTown)
-                    done()
-                })
-        })
+                request
+                    .post('/town')
+                    .set('Authorization', validToken)
+                    .field('name', validTown.name)
+                    .field('description', validTown.description)
+                    .field('location', JSON.stringify(validTown.location))
+                    .field('address', validTown.address)
+                    .field('phone', validTown.phone)
+                    .field('email', validTown.email)
+                    .field('web', validTown.web)
+                    .attach('image', __dirname + '/../fixtures/duruelo.png')
+                    .expect(200)
+                    .end(function (err, res) {
+                        expect(err).to.be.null
+                        expect(res.body.status).to.be.true
+                        validTown.slug = slugify(validTown.name)
+                        expect(res.body.data).to.have.property('id')
+                        validTown.id = res.body.data.id
+                        expect(res.body.data).to.have.property('image')
+                        validTown.image = res.body.data.image
+                        expect(res.body.data).to.be.deep.equal(validTown)
+                        done()
+                    })
+            })
+        }
 
         it('should response ok (add Town without image)', function (done) {
             validTown = {

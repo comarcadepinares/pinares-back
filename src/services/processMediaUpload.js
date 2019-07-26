@@ -6,7 +6,9 @@ const S3 = require('./s3')
 const parameters = requireRoot('../parameters')
 const debug = require('debug')('app:services:processMediaUpload')
 
-const s3 = new S3(parameters.AWS)
+const AWSParameters = process.env.PB_AWS_CONF ? JSON.parse(process.env.PB_AWS_CONF) : parameters.AWS
+const s3 = new S3(AWSParameters)
+
 const IMAGE_VALID_MIMETYPES = ['image/jpeg', 'image/png']
 
 module.exports = {
