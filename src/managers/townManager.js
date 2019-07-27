@@ -82,7 +82,7 @@ module.exports = {
         return town.getPublicInfo()
     },
 
-    async update (town, { description, location, address, phone, email, web }, image) {
+    async update (town, { name, description, location, address, phone, email, web }, image) {
         if (!description || !location) {
             throw new exception.ValidationTown()
         }
@@ -99,7 +99,7 @@ module.exports = {
             location = addSRID(location)
         }
 
-        if (image) {
+        if (image && town.image !== image) {
             image = await processMediaUpload.preprocessImages([image])
 
             try {
@@ -109,8 +109,11 @@ module.exports = {
             } catch (error) {
                 throw new exception.UploadingImagesError()
             }
+        } else {
+            image = town.image
         }
 
+        town.name = name
         town.description = description
         town.image = image || null
         town.location = location

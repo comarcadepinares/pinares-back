@@ -83,7 +83,7 @@ module.exports = {
         return hotel.getPublicInfo()
     },
 
-    async update (hotel, { type, townId, description, location, address, phone, email, web }, image) {
+    async update (hotel, { name, type, townId, description, location, address, phone, email, web }, image) {
         debug(type, townId, description, location)
         if (!description || !location || !Hotel.TYPES.includes(type) || !townId) {
             throw new exception.ValidationHotel()
@@ -101,7 +101,7 @@ module.exports = {
             location = addSRID(location)
         }
 
-        if (image) {
+        if (image && hotel.image !== image) {
             image = await processMediaUpload.preprocessImages([image])
 
             try {
@@ -111,8 +111,11 @@ module.exports = {
             } catch (error) {
                 throw new exception.UploadingImagesError()
             }
+        } else {
+            image = town.image
         }
 
+        hotel.name = name
         hotel.description = description
         hotel.image = image || null
         hotel.location = location
