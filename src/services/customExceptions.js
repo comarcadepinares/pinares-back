@@ -14,20 +14,14 @@ const errors = [
         statusCode: 404
     },
     {
-        name: 'ValidationFailed',
+        name: 'ValidationPublicKeyFailed',
         code: 1001,
         message: 'Authentication failed',
         statusCode: 403
     },
     {
-        name: 'ValidationPublicKeyFailed',
-        code: 1002,
-        message: 'Authentication failed',
-        statusCode: 403
-    },
-    {
         name: 'ValidationTokenExpired',
-        code: 1004,
+        code: 1002,
         message: 'Token expired',
         statusCode: 403
     },
