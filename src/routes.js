@@ -7,12 +7,14 @@ const parameters = requireRoot('../parameters')
 const auth = requireRoot('services/auth/auth')
 
 const getTownMiddleware = require('./middlewares/getTown')
+const getActivityTypeMiddleware = require('./middlewares/getActivityType')
 const getHotelMiddleware = require('./middlewares/getHotel')
 
 const mainController = require('./controllers/mainController')
 const authController = require('./controllers/authController')
 const userController = require('./controllers/userController')
 const townController = require('./controllers/townController')
+const activityTypeController = require('./controllers/activityTypeController')
 const hotelController = require('./controllers/hotelController')
 
 module.exports = function (app) {
@@ -46,6 +48,16 @@ module.exports = function (app) {
     townRouter.post('/', auth.validate, auth.superadmin, multer.single('image'), townController.create)
     townRouter.put('/:slug', auth.validate, auth.superadmin, multer.single('image'), getTownMiddleware(), townController.update)
     townRouter.delete('/:slug', auth.validate, auth.superadmin, getTownMiddleware(), townController.remove)
+
+    // Town routes
+    let activityTypeRouter = express.Router({ mergeParams: true })
+    app.use('/activity-type', activityTypeRouter)
+
+    activityTypeRouter.get('/', activityTypeController.getAll)
+    activityTypeRouter.get('/:slug', getActivityTypeMiddleware(), activityTypeController.getOne)
+    activityTypeRouter.post('/', auth.validate, auth.superadmin, multer.single('image'), activityTypeController.create)
+    activityTypeRouter.put('/:slug', auth.validate, auth.superadmin, multer.single('image'), getActivityTypeMiddleware(), activityTypeController.update)
+    activityTypeRouter.delete('/:slug', auth.validate, auth.superadmin, getActivityTypeMiddleware(), activityTypeController.remove)
 
     // Hotel routes
     let hotelRouter = express.Router({ mergeParams: true })

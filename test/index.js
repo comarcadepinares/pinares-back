@@ -24,6 +24,7 @@ appManager.on('appManager:app:ready', (app) => {
     mocha.addFile(path.resolve('test/functional/user.js'))
     mocha.addFile(path.resolve('test/functional/town.js'))
     mocha.addFile(path.resolve('test/functional/hotel.js'))
+    mocha.addFile(path.resolve('test/functional/activityType.js'))
 
     // run tests
     mocha.run()

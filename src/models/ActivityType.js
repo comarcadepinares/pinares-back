@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         image: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         }
     }, base), {
         timestamps: true,
@@ -39,6 +39,32 @@ module.exports = (sequelize, DataTypes) => {
                 removed: false,
                 actived: true
             }
+        }
+    })
+
+    ActivityType.associate = function (models) {
+        ActivityType.belongsTo(models.User)
+    }
+
+    ActivityType.getAll = function ({ offset, limit }) {
+        return this.findAll({ offset, limit })
+    }
+
+    ActivityType.getOneBySlug = function (slug) {
+        return this.findOne({ where: { slug } })
+    }
+
+    Object.assign(ActivityType.prototype, {
+        getPublicInfo () {
+            let publicInfo = {
+                id: this.id,
+                name: this.name,
+                slug: this.slug,
+                description: this.description,
+                image: this.image
+            }
+
+            return publicInfo
         }
     })
 

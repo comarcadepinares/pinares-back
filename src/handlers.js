@@ -23,7 +23,7 @@ module.exports = function (app) {
     })
 
     // 50x
-    app.use(function expressDeliverErrorResponse (err, req, res, next) {
+    app.use(function (err, req, res, next) {
         if (!(err instanceof exception.CustomException)) {
             err = new exception.SomethingWasWrong(err)
             err.code = 500
