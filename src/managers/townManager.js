@@ -83,7 +83,7 @@ module.exports = {
     },
 
     async update (town, { name, description, location, address, phone, email, web }, image) {
-        if (!description || !location) {
+        if (!name || !description || !location) {
             throw new exception.ValidationTown()
         }
 

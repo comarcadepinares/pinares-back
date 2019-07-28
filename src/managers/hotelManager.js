@@ -84,8 +84,7 @@ module.exports = {
     },
 
     async update (hotel, { name, type, townId, description, location, address, phone, email, web }, image) {
-        debug(type, townId, description, location)
-        if (!description || !location || !Hotel.TYPES.includes(type) || !townId) {
+        if (!name || !description || !location || !Hotel.TYPES.includes(type) || !townId) {
             throw new exception.ValidationHotel()
         }
 
@@ -112,7 +111,7 @@ module.exports = {
                 throw new exception.UploadingImagesError()
             }
         } else {
-            image = town.image
+            image = hotel.image
         }
 
         hotel.name = name

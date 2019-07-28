@@ -16,7 +16,7 @@ const pagination = {
     limit: 25
 }
 
-describe('FUNCTIONAL API - CONTENT', function(){
+describe('FUNCTIONAL API - TOWN', function(){
     before(async function() {
         validUser = {
             "email": faker.internet.email().toLowerCase(),
@@ -253,6 +253,7 @@ describe('FUNCTIONAL API - CONTENT', function(){
         })
 
         it('should response ok (update Town)', function (done) {
+            validTown.name = faker.lorem.sentence(),
             validTown.description = faker.lorem.sentence()
             validTown.location = getPoint(faker.address.latitude(), faker.address.longitude())
             validTown.address = faker.address.streetAddress()
@@ -263,12 +264,7 @@ describe('FUNCTIONAL API - CONTENT', function(){
             request
                 .put('/town/' + validTown.slug)
                 .set('Authorization', validToken)
-                .field('description', validTown.description)
-                .field('location', JSON.stringify(validTown.location))
-                .field('address', validTown.address)
-                .field('phone', validTown.phone)
-                .field('email', validTown.email)
-                .field('web', validTown.web)
+                .send(validTown)
                 .expect(200)
                 .end(function (err, res) {
                     expect(err).to.be.null

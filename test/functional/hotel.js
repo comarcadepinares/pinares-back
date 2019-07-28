@@ -17,7 +17,7 @@ const pagination = {
     limit: 25
 }
 
-describe('FUNCTIONAL API - CONTENT', function(){
+describe('FUNCTIONAL API - HOTEL', function(){
     before(async function() {
         validUser = {
             "email": faker.internet.email().toLowerCase(),
@@ -378,6 +378,7 @@ describe('FUNCTIONAL API - CONTENT', function(){
         it('should response ok (update Hotel)', function (done) {
             validHotel.townId = validTown.id
 
+            validHotel.name = faker.lorem.sentence(),
             validHotel.description = faker.lorem.sentence()
             validHotel.location = getPoint(faker.address.latitude(), faker.address.longitude())
             validHotel.address = faker.address.streetAddress()
