@@ -46,8 +46,8 @@ module.exports = function (app) {
     townRouter.get('/', townController.getAll)
     townRouter.get('/:slug', getTownMiddleware(), townController.getOne)
     townRouter.post('/', auth.validate, auth.superadmin, multer.single('image'), townController.create)
-    townRouter.put('/:slug', auth.validate, auth.superadmin, multer.single('image'), getTownMiddleware(), townController.update)
-    townRouter.delete('/:slug', auth.validate, auth.superadmin, getTownMiddleware(), townController.remove)
+    townRouter.put('/:slug', auth.validate, auth.superadmin, multer.single('image'), getTownMiddleware(true), townController.update)
+    townRouter.delete('/:slug', auth.validate, auth.superadmin, getTownMiddleware(true), townController.remove)
 
     // Town routes
     let activityTypeRouter = express.Router({ mergeParams: true })
@@ -56,8 +56,8 @@ module.exports = function (app) {
     activityTypeRouter.get('/', activityTypeController.getAll)
     activityTypeRouter.get('/:slug', getActivityTypeMiddleware(), activityTypeController.getOne)
     activityTypeRouter.post('/', auth.validate, auth.superadmin, multer.single('image'), activityTypeController.create)
-    activityTypeRouter.put('/:slug', auth.validate, auth.superadmin, multer.single('image'), getActivityTypeMiddleware(), activityTypeController.update)
-    activityTypeRouter.delete('/:slug', auth.validate, auth.superadmin, getActivityTypeMiddleware(), activityTypeController.remove)
+    activityTypeRouter.put('/:slug', auth.validate, auth.superadmin, multer.single('image'), getActivityTypeMiddleware(true), activityTypeController.update)
+    activityTypeRouter.delete('/:slug', auth.validate, auth.superadmin, getActivityTypeMiddleware(true), activityTypeController.remove)
 
     // Hotel routes
     let hotelRouter = express.Router({ mergeParams: true })
@@ -66,6 +66,6 @@ module.exports = function (app) {
     hotelRouter.get('/', hotelController.getAll)
     hotelRouter.get('/:slug', getHotelMiddleware(), hotelController.getOne)
     hotelRouter.post('/', auth.validate, multer.single('image'), hotelController.create)
-    hotelRouter.put('/:slug', auth.validate, multer.single('image'), getHotelMiddleware(), hotelController.update)
-    hotelRouter.delete('/:slug', auth.validate, getHotelMiddleware(), hotelController.remove)
+    hotelRouter.put('/:slug', auth.validate, multer.single('image'), getHotelMiddleware(true), hotelController.update)
+    hotelRouter.delete('/:slug', auth.validate, getHotelMiddleware(true), hotelController.remove)
 }

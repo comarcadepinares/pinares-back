@@ -27,7 +27,7 @@ module.exports = {
         }
     },
 
-    async create ({ name, description }, image) {
+    async create (user, { name, description }, image) {
         if (!name || !description ) {
             throw new exception.ValidationActivityType()
         }
@@ -48,7 +48,8 @@ module.exports = {
             name,
             slug: slugify(name),
             description,
-            image
+            image,
+            userId: user.id
         })
 
         try {

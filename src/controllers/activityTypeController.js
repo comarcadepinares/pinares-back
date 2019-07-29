@@ -11,7 +11,7 @@ module.exports = {
 
     async create (req, res, next) {
         try {
-            res.locals.response = await activityTypeManager.create(req.body, req.file)
+            res.locals.response = await activityTypeManager.create(res.locals.user, req.body, req.file)
             next()
         } catch (error) {
             next(error)
