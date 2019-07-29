@@ -593,4 +593,96 @@ describe('FUNCTIONAL API - HOTEL', function(){
                 })
         })
     })
+
+    describe('Other user', function(){
+        before(async function() {
+            validUser = {
+                "email": faker.internet.email().toLowerCase(),
+                "password": faker.internet.password(),
+                "username": faker.internet.userName().toLowerCase()
+            }
+        })
+
+        it('should response ok (register)',function(done){
+            let data = validUser
+
+            request
+                .post('/auth/register')
+                .send(data)
+                .expect(200)
+                .end(function(err,res){
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.have.property('token')
+                    validToken = res.body.data.token
+                    expect(res.body.data).to.have.property('user')
+                    expect(res.body.data.user.email).to.be.equal(data.email)
+                    expect(res.body.data.user.email).to.be.equal(data.email)
+                    expect(res.body.data.user.username).to.be.equal(data.username)
+                    done()
+                })
+        })
+
+        it('should response ok (login with email)',function(done){
+            let data = {
+                "email": validUser.email,
+                "password": validUser.password,
+            }
+
+            request
+                .post('/auth/login')
+                .send(data)
+                .expect(200)
+                .end(function(err,res){
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data.user.email).to.be.equal(validUser.email)
+                    expect(res.body.data.user.username).to.be.equal(validUser.username)
+                    expect(res.body.data.token).to.be.an('string')
+                    validToken = res.body.data.token
+                    done()
+                })
+        })
+
+        it('should fail updating Hotel if the user is not the owner', function (done) {
+            let error = new exception.EntityNotExists()
+
+            request
+                .put('/hotel/' + validHotel.slug)
+                .set('Authorization', validToken)
+                .send(validHotel)
+                .expect(error.statusCode)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body).to.deep.equal({
+                        "status": false,
+                        "error": {
+                            "code": error.code,
+                            "message": error.message
+                        }
+                    })
+                    done()
+                })
+        })
+
+        it('should fail deleting Hotel if the user is not the owner', function (done) {
+            let error = new exception.EntityNotExists()
+
+            request
+                .delete('/hotel/' + validHotel.slug)
+                .set('Authorization', validToken)
+                .expect(error.statusCode)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body).to.deep.equal({
+                        "status": false,
+                        "error": {
+                            "code": error.code,
+                            "message": error.message
+                        }
+                    })
+                    done()
+                })
+        })
+    })
 })
