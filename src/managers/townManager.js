@@ -28,7 +28,7 @@ module.exports = {
         }
     },
 
-    async create ({ name, description, location, address, phone, email, web }, image) {
+    async create (user, { name, description, location, address, phone, email, web }, image) {
         if (!name || !description || !location) {
             throw new exception.ValidationTown()
         }
@@ -66,7 +66,8 @@ module.exports = {
             address,
             phone,
             email,
-            web
+            web,
+            userId: user.id
         })
 
         try {

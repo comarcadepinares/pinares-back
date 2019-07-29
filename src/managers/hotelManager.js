@@ -28,7 +28,7 @@ module.exports = {
         }
     },
 
-    async create ({ name, type, townId, description, location, address, phone, email, web }, image) {
+    async create (user, { name, type, townId, description, location, address, phone, email, web }, image) {
         if (!name || !description || !location || !Hotel.TYPES.includes(type) || !townId) {
             throw new exception.ValidationHotel()
         }
@@ -67,7 +67,8 @@ module.exports = {
             address,
             phone,
             email,
-            web
+            web,
+            userId: user.id
         })
 
         try {
