@@ -143,5 +143,9 @@ module.exports = {
         hotel.save()
 
         return true
-    }
+    },
+
+    getTypes () {
+        return { types: Hotel.TYPES }
+    },
 }

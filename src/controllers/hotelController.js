@@ -35,5 +35,10 @@ module.exports = {
     async remove (req, res, next) {
         res.locals.response = await hotelManager.remove(res.locals.hotel)
         next()
-    }
+    },
+
+    getTypes (req, res, next) {
+        res.locals.response = hotelManager.getTypes()
+        next()
+    },
 }

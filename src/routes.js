@@ -63,6 +63,7 @@ module.exports = function (app) {
     let hotelRouter = express.Router({ mergeParams: true })
     app.use('/hotel', hotelRouter)
 
+    app.get('/hoteltypes', auth.validate, hotelController.getTypes)
     hotelRouter.get('/', hotelController.getAll)
     hotelRouter.get('/:slug', getHotelMiddleware(), hotelController.getOne)
     hotelRouter.post('/', auth.validate, multer.single('image'), hotelController.create)

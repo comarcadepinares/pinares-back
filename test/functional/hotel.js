@@ -4,6 +4,7 @@ const expect = require('chai').expect
 const request = require('supertest').agent(testApp)
 const faker = require('faker')
 const { slugify } = requireRoot('services/utils')
+const Hotel = requireRoot('appManager').models.Hotel
 const { changeUserRole, getPoint } = require('../helper')
 const exception = requireRoot('services/customExceptions')
 const debug = require('debug')('app:test:functional:index')
@@ -531,6 +532,20 @@ describe('FUNCTIONAL API - HOTEL', function(){
                     validToken = res.body.data.token
                     done()
                 })
+        })
+
+        it('get hotel types', function (done) {
+            request
+            .get('/hoteltypes')
+            .set('Authorization', validToken)
+            .expect(200)
+            .end(function (err, res) {
+                expect(err).to.be.null
+                expect(res.body.status).to.be.true
+                expect(res.body.data).to.have.property('types')
+                expect(res.body.data.types).to.be.deep.equal(Hotel.TYPES)
+                done()
+            })
         })
 
         it('should work adding Hotel', function (done) {
