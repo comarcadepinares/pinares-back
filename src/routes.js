@@ -11,6 +11,7 @@ const getActivityTypeMiddleware = require('./middlewares/getActivityType')
 const getHotelMiddleware = require('./middlewares/getHotel')
 const getRestaurantMiddleware = require('./middlewares/getRestaurant')
 const getServiceMiddleware = require('./middlewares/getService')
+const getActivityMiddleware = require('./middlewares/getActivity')
 
 const mainController = require('./controllers/mainController')
 const authController = require('./controllers/authController')
@@ -20,6 +21,7 @@ const activityTypeController = require('./controllers/activityTypeController')
 const hotelController = require('./controllers/hotelController')
 const restaurantController = require('./controllers/restaurantController')
 const serviceController = require('./controllers/serviceController')
+const activityController = require('./controllers/activityController')
 
 module.exports = function (app) {
     // Test routes
@@ -62,6 +64,16 @@ module.exports = function (app) {
     activityTypeRouter.post('/', auth.validate, auth.superadmin, multer.single('image'), activityTypeController.create)
     activityTypeRouter.put('/:slug', auth.validate, auth.superadmin, multer.single('image'), getActivityTypeMiddleware(true), activityTypeController.update)
     activityTypeRouter.delete('/:slug', auth.validate, auth.superadmin, getActivityTypeMiddleware(true), activityTypeController.remove)
+
+    // Activity routes
+    let activityRouter = express.Router({ mergeParams: true })
+    app.use('/activity', activityRouter)
+
+    activityRouter.get('/', activityController.getAll)
+    activityRouter.get('/:slug', getActivityMiddleware(), activityController.getOne)
+    activityRouter.post('/', auth.validate, multer.single('image'), activityController.create)
+    activityRouter.put('/:slug', auth.validate, multer.single('image'), getActivityMiddleware(true), activityController.update)
+    activityRouter.delete('/:slug', auth.validate, getActivityMiddleware(true), activityController.remove)
 
     // Hotel routes
     let hotelRouter = express.Router({ mergeParams: true })

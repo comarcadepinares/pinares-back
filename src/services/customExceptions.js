@@ -122,6 +122,12 @@ const errors = [
         statusCode: 400
     },
     {
+        name: 'ValidationActivity',
+        code: 1404,
+        message: 'Name, type, townId, activityTypeId, description and location are required',
+        statusCode: 400
+    },
+    {
         name: 'DatabaseError',
         code: 2001,
         message: 'something was wrong',

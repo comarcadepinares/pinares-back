@@ -1,14 +1,10 @@
 'use strict'
 
 const baseExtended = require('./_BaseExtended')
+const schedule = require('./_schedule')
 
 module.exports = (sequelize, DataTypes) => {
-    let Activity = sequelize.define('activity', Object.assign({
-        geom: {
-            type: DataTypes.GEOMETRY('LINESTRING', 4326),
-            allowNull: true
-        }
-    }, baseExtended), {
+    let Activity = sequelize.define('activity', baseExtended, {
         timestamps: true,
         defaultScope: {
             where: {
@@ -19,7 +15,11 @@ module.exports = (sequelize, DataTypes) => {
         indexes: [
             {
                 unique: true,
-                fields: ['name', 'userId']
+                fields: ['slug']
+            },
+            {
+                unique: true,
+                fields: ['name', 'townId']
             }
         ]
     })
@@ -37,6 +37,31 @@ module.exports = (sequelize, DataTypes) => {
     Activity.getOneBySlug = function (slug) {
         return this.findOne({ where: { slug } })
     }
+
+    Object.assign(Activity.prototype, {
+        getPublicInfo () {
+            const location = this.location
+            delete location.crs
+
+            let publicInfo = {
+                id: this.id,
+                activityTypeId: this.activityTypeId,
+                name: this.name,
+                slug: this.slug,
+                description: this.description,
+                image: this.image,
+                location: this.location,
+                address: this.address,
+                phone: this.phone,
+                email: this.email,
+                web: this.web,
+                townId: this.townId
+            }
+
+            return publicInfo
+        }
+    })
+
 
     return Activity
 }
