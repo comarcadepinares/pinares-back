@@ -34,10 +34,6 @@ module.exports = (sequelize, DataTypes) => {
         return this.findAll({ offset, limit })
     }
 
-    // Activity.getAllWithOptions = function ({ offset, limit }) {
-    //     return this.findAll({ include: [models.ActivityOption], offset, limit })
-    // }
-
     Activity.getOneBySlug = function (slug) {
         return this.findOne({ where: { slug } })
     }

@@ -3,6 +3,8 @@
 const Promise = require('bluebird')
 
 const Activity = require('../appManager').models.Activity
+const ActivityOption = require('../appManager').models.ActivityOption
+
 const processMediaUpload = require('../services/processMediaUpload')
 const { slugify } = require('../services/utils')
 const { addSRID } = require('../services/geom')
@@ -15,7 +17,7 @@ module.exports = {
         const activities = await Activity.getAll(pagination)
         const activitiesInfo = await Promise.all(
             Promise.map(activities, async function (activity) {
-                return activity.getPublicInfo()
+                return await getActivityWithOptions(activity)
             })
         )
 
@@ -82,7 +84,7 @@ module.exports = {
             throw new exception.SomethingWasWrong()
         }
 
-        return activity.getPublicInfo()
+        return await getActivityWithOptions(activity)
     },
 
     async update (activity, { name, townId, activityTypeId, description, location, address, phone, email, web }, image) {
@@ -134,11 +136,11 @@ module.exports = {
             throw new exception.SomethingWasWrong()
         }
 
-        return activity.getPublicInfo()
+        return await getActivityWithOptions(activity)
     },
 
-    getOne (activity) {
-        return activity.getPublicInfo()
+    async getOne (activity) {
+        return await getActivityWithOptions(activity)
     },
 
     async remove (activity) {
@@ -147,4 +149,12 @@ module.exports = {
 
         return true
     }
+}
+
+async function getActivityWithOptions (activity) {
+    const activityOptions = await ActivityOption.getAllByActivityId(activity.id)
+    return Object.assign(
+        activity.getPublicInfo(),
+        { options: activityOptions }
+    )
 }

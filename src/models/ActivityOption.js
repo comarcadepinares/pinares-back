@@ -92,6 +92,10 @@ module.exports = (sequelize, DataTypes) => {
         return this.findAll({ offset, limit })
     }
 
+    ActivityOption.getAllByActivityId = function (activityId, { offset, limit } = { offset: 0, limit: 1000}) {
+        return this.findAll({ where: { activityId }, offset, limit })
+    }
+
     ActivityOption.getOneById = function (id) {
         return this.findOne({ where: { id } })
     }

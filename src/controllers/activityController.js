@@ -28,7 +28,7 @@ module.exports = {
     },
 
     async getOne (req, res, next) {
-        res.locals.response = activityManager.getOne(res.locals.activity)
+        res.locals.response = await activityManager.getOne(res.locals.activity)
         next()
     },
 
