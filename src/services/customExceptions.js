@@ -110,6 +110,18 @@ const errors = [
         statusCode: 400
     },
     {
+        name: 'ValidationRestaurant',
+        code: 1403,
+        message: 'Name, townId, description and location are required',
+        statusCode: 400
+    },
+    {
+        name: 'ValidationService',
+        code: 1404,
+        message: 'Name, type, townId, description and location are required',
+        statusCode: 400
+    },
+    {
         name: 'DatabaseError',
         code: 2001,
         message: 'something was wrong',

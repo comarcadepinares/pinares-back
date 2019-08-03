@@ -10,6 +10,7 @@ const getTownMiddleware = require('./middlewares/getTown')
 const getActivityTypeMiddleware = require('./middlewares/getActivityType')
 const getHotelMiddleware = require('./middlewares/getHotel')
 const getRestaurantMiddleware = require('./middlewares/getRestaurant')
+const getServiceMiddleware = require('./middlewares/getService')
 
 const mainController = require('./controllers/mainController')
 const authController = require('./controllers/authController')
@@ -18,6 +19,7 @@ const townController = require('./controllers/townController')
 const activityTypeController = require('./controllers/activityTypeController')
 const hotelController = require('./controllers/hotelController')
 const restaurantController = require('./controllers/restaurantController')
+const serviceController = require('./controllers/serviceController')
 
 module.exports = function (app) {
     // Test routes
@@ -81,4 +83,15 @@ module.exports = function (app) {
     restaurantRouter.post('/', auth.validate, multer.single('image'), restaurantController.create)
     restaurantRouter.put('/:slug', auth.validate, multer.single('image'), getRestaurantMiddleware(true), restaurantController.update)
     restaurantRouter.delete('/:slug', auth.validate, getRestaurantMiddleware(true), restaurantController.remove)
+
+    // Service routes
+    let serviceRouter = express.Router({ mergeParams: true })
+    app.use('/service', serviceRouter)
+
+    app.get('/servicetypes', auth.validate, serviceController.getTypes)
+    serviceRouter.get('/', serviceController.getAll)
+    serviceRouter.get('/:slug', getServiceMiddleware(), serviceController.getOne)
+    serviceRouter.post('/', auth.validate, multer.single('image'), serviceController.create)
+    serviceRouter.put('/:slug', auth.validate, multer.single('image'), getServiceMiddleware(true), serviceController.update)
+    serviceRouter.delete('/:slug', auth.validate, getServiceMiddleware(true), serviceController.remove)
 }

@@ -27,7 +27,11 @@ module.exports = (sequelize, DataTypes) => {
         indexes: [
             {
                 unique: true,
-                fields: ['name', 'userId']
+                fields: ['slug']
+            },
+            {
+                unique: true,
+                fields: ['name', 'townId']
             }
         ]
     })
@@ -44,6 +48,32 @@ module.exports = (sequelize, DataTypes) => {
     Service.getOneBySlug = function (slug) {
         return this.findOne({ where: { slug } })
     }
+
+    Service.TYPES = TYPES
+
+    Object.assign(Service.prototype, {
+        getPublicInfo () {
+            const location = this.location
+            delete location.crs
+
+            let publicInfo = {
+                id: this.id,
+                name: this.name,
+                type: this.type,
+                slug: this.slug,
+                description: this.description,
+                image: this.image,
+                location: this.location,
+                address: this.address,
+                phone: this.phone,
+                email: this.email,
+                web: this.web,
+                townId: this.townId
+            }
+
+            return publicInfo
+        }
+    })
 
     return Service
 }
