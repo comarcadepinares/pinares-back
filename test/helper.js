@@ -1,7 +1,7 @@
 'use strict'
 
 const redis = requireRoot('services/db/redis')
-const { getPoint } = requireRoot('services/geom')
+const { getPoint, getLine } = requireRoot('services/geom')
 
 module.exports = {
     async cleanDb () {
@@ -24,5 +24,13 @@ module.exports = {
 
     getPoint(latitude, longitude) {
         return getPoint([parseFloat(latitude), parseFloat(longitude)])
+    },
+
+    getLine(latitude1, longitude1, latitude2, longitude2, latitude3, longitude3) {
+        return getLine([
+            [parseFloat(latitude1), parseFloat(longitude1)],
+            [parseFloat(latitude2), parseFloat(longitude2)],
+            [parseFloat(latitude3), parseFloat(longitude3)]
+        ])
     }
 }

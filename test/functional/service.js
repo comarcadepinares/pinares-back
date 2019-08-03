@@ -18,7 +18,7 @@ const pagination = {
     limit: 25
 }
 
-describe.only('FUNCTIONAL API - SERVICE', function(){
+describe('FUNCTIONAL API - SERVICE', function(){
     before(async function() {
         validUser = {
             "email": faker.internet.email().toLowerCase(),

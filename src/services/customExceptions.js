@@ -128,6 +128,12 @@ const errors = [
         statusCode: 400
     },
     {
+        name: 'ValidationActivityOption',
+        code: 1405,
+        message: 'price and priceType are required',
+        statusCode: 400
+    },
+    {
         name: 'DatabaseError',
         code: 2001,
         message: 'something was wrong',

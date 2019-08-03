@@ -8,20 +8,22 @@ const auth = requireRoot('services/auth/auth')
 
 const getTownMiddleware = require('./middlewares/getTown')
 const getActivityTypeMiddleware = require('./middlewares/getActivityType')
+const getActivityMiddleware = require('./middlewares/getActivity')
+const getActivityOptionMiddleware = require('./middlewares/getActivityOption')
 const getHotelMiddleware = require('./middlewares/getHotel')
 const getRestaurantMiddleware = require('./middlewares/getRestaurant')
 const getServiceMiddleware = require('./middlewares/getService')
-const getActivityMiddleware = require('./middlewares/getActivity')
 
 const mainController = require('./controllers/mainController')
 const authController = require('./controllers/authController')
 const userController = require('./controllers/userController')
 const townController = require('./controllers/townController')
 const activityTypeController = require('./controllers/activityTypeController')
+const activityController = require('./controllers/activityController')
+const activityOptionController = require('./controllers/activityOptionController')
 const hotelController = require('./controllers/hotelController')
 const restaurantController = require('./controllers/restaurantController')
 const serviceController = require('./controllers/serviceController')
-const activityController = require('./controllers/activityController')
 
 module.exports = function (app) {
     // Test routes
@@ -74,6 +76,13 @@ module.exports = function (app) {
     activityRouter.post('/', auth.validate, multer.single('image'), activityController.create)
     activityRouter.put('/:slug', auth.validate, multer.single('image'), getActivityMiddleware(true), activityController.update)
     activityRouter.delete('/:slug', auth.validate, getActivityMiddleware(true), activityController.remove)
+
+    // Activity options
+    activityRouter.get('/:slug/option/', getActivityMiddleware(), activityOptionController.getAll)
+    activityRouter.get('/:slug/option/:id', getActivityMiddleware(), getActivityOptionMiddleware(), activityOptionController.getOne)
+    activityRouter.post('/:slug/option/', auth.validate, getActivityMiddleware(true), activityOptionController.create)
+    activityRouter.put('/:slug/option/:id', auth.validate, getActivityMiddleware(true), getActivityOptionMiddleware(true), activityOptionController.update)
+    activityRouter.delete('/:slug/option/:id', auth.validate, getActivityMiddleware(true), getActivityOptionMiddleware(true), activityOptionController.remove)
 
     // Hotel routes
     let hotelRouter = express.Router({ mergeParams: true })

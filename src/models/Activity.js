@@ -1,7 +1,6 @@
 'use strict'
 
 const baseExtended = require('./_BaseExtended')
-const schedule = require('./_schedule')
 
 module.exports = (sequelize, DataTypes) => {
     let Activity = sequelize.define('activity', baseExtended, {
@@ -28,11 +27,16 @@ module.exports = (sequelize, DataTypes) => {
         Activity.belongsTo(models.User)
         Activity.belongsTo(models.Town)
         Activity.belongsTo(models.ActivityType)
+        Activity.hasMany(models.ActivityOption)
     }
 
     Activity.getAll = function ({ offset, limit }) {
         return this.findAll({ offset, limit })
     }
+
+    // Activity.getAllWithOptions = function ({ offset, limit }) {
+    //     return this.findAll({ include: [models.ActivityOption], offset, limit })
+    // }
 
     Activity.getOneBySlug = function (slug) {
         return this.findOne({ where: { slug } })

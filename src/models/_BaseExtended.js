@@ -26,6 +26,10 @@ module.exports = Object.assign({
         type: Sequelize.STRING,
         allowNull: true
     },
+    images: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
+        allowNull: true
+    },
     location: {
         type: Sequelize.GEOMETRY('POINT', 4326),
         allowNull: true

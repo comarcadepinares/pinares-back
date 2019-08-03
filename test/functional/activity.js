@@ -4,21 +4,21 @@ const expect = require('chai').expect
 const request = require('supertest').agent(testApp)
 const faker = require('faker')
 const { slugify } = requireRoot('services/utils')
-const Hotel = requireRoot('appManager').models.Hotel
 const { changeUserRole, getPoint } = require('../helper')
 const exception = requireRoot('services/customExceptions')
 const debug = require('debug')('app:test:functional:index')
 
 let validUser
 let validToken
-let validHotel
+let validActivity
 let validTown
+let validActivityType
 const pagination = {
     page: 1,
     limit: 25
 }
 
-describe('FUNCTIONAL API - HOTEL', function(){
+describe('FUNCTIONAL API - ACTIVITY', function(){
     before(async function() {
         validUser = {
             "email": faker.internet.email().toLowerCase(),
@@ -73,15 +73,15 @@ describe('FUNCTIONAL API - HOTEL', function(){
                 })
         })
 
-        it('get hotel empty without token', function (done) {
+        it('get activity empty without token', function (done) {
             request
-                .get('/hotel')
+                .get('/activity')
                 .expect(200)
                 .end(function (err, res) {
                     expect(err).to.be.null
                     expect(res.body.status).to.be.true
-                    expect(res.body.data).to.have.property('hotels')
-                    expect(res.body.data.hotels).to.be.an('Array').to.be.empty
+                    expect(res.body.data).to.have.property('activities')
+                    expect(res.body.data.activities).to.be.an('Array').to.be.empty
                     expect(res.body.data).to.have.property('pagination')
                     expect(res.body.data.pagination).to.be.deep.equal(pagination)
                     done()
@@ -116,12 +116,36 @@ describe('FUNCTIONAL API - HOTEL', function(){
                 })
         })
 
+        it('should response ok (add ActivityType without image)', function (done) {
+            validActivityType = {
+                name: faker.lorem.sentence(),
+                description: faker.lorem.sentence(),
+                image: null
+            }
+
+            request
+                .post('/activity-type')
+                .set('Authorization', validToken)
+                .field('name', validActivityType.name)
+                .field('description', validActivityType.description)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    validActivityType.slug = slugify(validActivityType.name)
+                    expect(res.body.data).to.have.property('id')
+                    validActivityType.id = res.body.data.id
+                    expect(res.body.data).to.be.deep.equal(validActivityType)
+                    done()
+                })
+        })
+
         if (process.env.PB_AWS_CONF) {
-            it('should response ok (add Hotel)', function (done) {
-                validHotel = {
+            it('should response ok (add Activity)', function (done) {
+                validActivity = {
                     name: faker.lorem.sentence(),
                     townId: validTown.id,
-                    type: 'hotel',
+                    activityTypeId: validActivityType.id,
                     description: faker.lorem.sentence(),
                     location: getPoint(faker.address.latitude(), faker.address.longitude()),
                     address: faker.address.streetAddress(),
@@ -131,39 +155,38 @@ describe('FUNCTIONAL API - HOTEL', function(){
                 }
 
                 request
-                    .post('/hotel')
+                    .post('/activity')
                     .set('Authorization', validToken)
-                    .field('name', validHotel.name)
-                    .field('townId', validHotel.townId)
-                    .field('type', validHotel.type)
-                    .field('description', validHotel.description)
-                    .field('location', JSON.stringify(validHotel.location))
-                    .field('address', validHotel.address)
-                    .field('phone', validHotel.phone)
-                    .field('email', validHotel.email)
-                    .field('web', validHotel.web)
+                    .field('name', validActivity.name)
+                    .field('townId', validActivity.townId)
+                    .field('activityTypeId', validActivity.activityTypeId)
+                    .field('description', validActivity.description)
+                    .field('location', JSON.stringify(validActivity.location))
+                    .field('address', validActivity.address)
+                    .field('phone', validActivity.phone)
+                    .field('email', validActivity.email)
+                    .field('web', validActivity.web)
                     .attach('image', __dirname + '/../fixtures/duruelo.png')
                     .expect(200)
                     .end(function (err, res) {
                         expect(err).to.be.null
                         expect(res.body.status).to.be.true
-                        validHotel.slug = slugify(validHotel.name)
+                        validActivity.slug = slugify(validActivity.name)
                         expect(res.body.data).to.have.property('id')
-                        validHotel.id = res.body.data.id
+                        validActivity.id = res.body.data.id
                         expect(res.body.data).to.have.property('image')
-                        validHotel.image = res.body.data.image
-                        delete validHotel.townId
-                        expect(res.body.data).to.be.deep.equal(validHotel)
+                        validActivity.image = res.body.data.image
+                        expect(res.body.data).to.be.deep.equal(validActivity)
                         done()
                     })
             })
         }
 
-        it('should response ok (add Hotel without image)', function (done) {
-            validHotel = {
+        it('should response ok (add Activity without image)', function (done) {
+            validActivity = {
                 name: faker.lorem.sentence(),
                 townId: validTown.id,
-                type: 'hotel',
+                activityTypeId: validActivityType.id,
                 description: faker.lorem.sentence(),
                 location: getPoint(faker.address.latitude(), faker.address.longitude()),
                 address: faker.address.streetAddress(),
@@ -174,123 +197,33 @@ describe('FUNCTIONAL API - HOTEL', function(){
             }
 
             request
-                .post('/hotel')
+                .post('/activity')
                 .set('Authorization', validToken)
-                .send(validHotel)
+                .send(validActivity)
                 .expect(200)
                 .end(function (err, res) {
                     expect(err).to.be.null
                     expect(res.body.status).to.be.true
-                    validHotel.slug = slugify(validHotel.name)
+                    validActivity.slug = slugify(validActivity.name)
                     expect(res.body.data).to.have.property('id')
-                    validHotel.id = res.body.data.id
-                    expect(res.body.data).to.be.deep.equal(validHotel)
+                    validActivity.id = res.body.data.id
+                    expect(res.body.data).to.be.deep.equal(validActivity)
                     done()
                 })
         })
 
-        it('should fail adding Hotel invalid params', function (done) {
-            const error = new exception.ValidationHotel()
-
-            const invalidHotels = [
-                {
-                    name: faker.lorem.sentence(),
-                    townId: validTown.id,
-                    description: faker.lorem.sentence(),
-                    location: getPoint(faker.address.latitude(), faker.address.longitude()),
-                    address: faker.address.streetAddress(),
-                    phone: faker.phone.phoneNumber(),
-                    email: faker.internet.email(),
-                    web: faker.internet.url(),
-                    image: null
-                },
-                {
-                    name: faker.lorem.sentence(),
-                    type: '',
-                    townId: validTown.id,
-                    description: faker.lorem.sentence(),
-                    location: getPoint(faker.address.latitude(), faker.address.longitude()),
-                    address: faker.address.streetAddress(),
-                    phone: faker.phone.phoneNumber(),
-                    email: faker.internet.email(),
-                    web: faker.internet.url(),
-                    image: null
-                },
-                {
-                    name: faker.lorem.sentence(),
-                    type: 'fake',
-                    townId: validTown.id,
-                    description: faker.lorem.sentence(),
-                    location: getPoint(faker.address.latitude(), faker.address.longitude()),
-                    address: faker.address.streetAddress(),
-                    phone: faker.phone.phoneNumber(),
-                    email: faker.internet.email(),
-                    web: faker.internet.url(),
-                    image: null
-                },
-                {
-                    name: faker.lorem.sentence(),
-                    type: 'hotel',
-                    description: faker.lorem.sentence(),
-                    location: getPoint(faker.address.latitude(), faker.address.longitude()),
-                    address: faker.address.streetAddress(),
-                    phone: faker.phone.phoneNumber(),
-                    email: faker.internet.email(),
-                    web: faker.internet.url(),
-                    image: null
-                },
-                {
-                    name: faker.lorem.sentence(),
-                    type: 'hotel',
-                    townId: 0,
-                    description: faker.lorem.sentence(),
-                    location: getPoint(faker.address.latitude(), faker.address.longitude()),
-                    address: faker.address.streetAddress(),
-                    phone: faker.phone.phoneNumber(),
-                    email: faker.internet.email(),
-                    web: faker.internet.url(),
-                    image: null
-                }
-            ]
-
-            let counter = 0
-            invalidHotels.forEach(invalidHotel => {
-                request
-                    .post('/hotel')
-                    .set('Authorization', validToken)
-                    .send(invalidHotel)
-                    .expect(error.statusCode)
-                    .end(function (err, res) {
-                        expect(err).to.be.null
-                        expect(res.body).to.deep.equal({
-                            "status": false,
-                            "error": {
-                                "code": error.code,
-                                "message": error.message
-                            }
-                        })
-                    })
-
-                counter++
-                if (counter >= invalidHotels.length) {
-                    done()
-                }
-            })
-
-        })
-
-        it('should fail adding Hotel without token', function (done) {
+        it('should fail adding Activity without token', function (done) {
             const error = new exception.ValidationPublicKeyFailed()
 
             request
-                .post('/hotel')
-                .field('name', validHotel.name)
-                .field('description', validHotel.description)
-                .field('location', JSON.stringify(validHotel.location))
-                .field('address', validHotel.address)
-                .field('phone', validHotel.phone)
-                .field('email', validHotel.email)
-                .field('web', validHotel.web)
+                .post('/activity')
+                .field('name', validActivity.name)
+                .field('description', validActivity.description)
+                .field('location', JSON.stringify(validActivity.location))
+                .field('address', validActivity.address)
+                .field('phone', validActivity.phone)
+                .field('email', validActivity.email)
+                .field('web', validActivity.web)
                 .expect(error.statusCode)
                 .end(function (err, res) {
                     expect(err).to.be.null
@@ -307,14 +240,14 @@ describe('FUNCTIONAL API - HOTEL', function(){
 
         it('should response ok (exists 1)', function (done) {
             request
-                .get('/hotel')
+                .get('/activity')
                 .expect(200)
                 .end(function (err, res) {
                     expect(err).to.be.null
                     expect(res.body.status).to.be.true
-                    expect(res.body.data).to.have.property('hotels')
-                    expect(res.body.data.hotels).to.be.an('Array')
-                    expect(res.body.data.hotels[0]).to.be.deep.equal(validHotel)
+                    expect(res.body.data).to.have.property('activities')
+                    expect(res.body.data.activities).to.be.an('Array')
+                    expect(res.body.data.activities[0]).to.be.deep.equal(validActivity)
                     expect(res.body.data).to.have.property('pagination')
                     expect(res.body.data.pagination).to.be.deep.equal(pagination)
                     done()
@@ -323,12 +256,12 @@ describe('FUNCTIONAL API - HOTEL', function(){
 
         it('should response ok (content exists)', function (done) {
             request
-                .get('/hotel/' + validHotel.slug)
+                .get('/activity/' + validActivity.slug)
                 .expect(200)
                 .end(function (err, res) {
                     expect(err).to.be.null
                     expect(res.body.status).to.be.true
-                    expect(res.body.data).to.be.deep.equal(validHotel)
+                    expect(res.body.data).to.be.deep.equal(validActivity)
                     done()
                 })
         })
@@ -337,7 +270,7 @@ describe('FUNCTIONAL API - HOTEL', function(){
             const error = new exception.EntityNotExists()
 
             request
-                .get('/hotel/' + validHotel.slug + '-not-exists')
+                .get('/activity/' + validActivity.slug + '-not-exists')
                 .expect(error.statusCode)
                 .end(function (err, res) {
                     expect(err).to.be.null
@@ -352,15 +285,15 @@ describe('FUNCTIONAL API - HOTEL', function(){
                 })
         })
 
-        it('should response ok (add hotel with the same name)', function (done) {
-            validHotel.townId = validTown.id
+        it('should response ok (add activity with the same name)', function (done) {
+            validActivity.townId = validTown.id
 
             const error = new exception.EntityAlreadyExists()
 
             request
-                .post('/hotel')
+                .post('/activity')
                 .set('Authorization', validToken)
-                .send(validHotel)
+                .send(validActivity)
                 .expect(error.statusCode)
                 .end(function (err, res) {
                     expect(err).to.be.null
@@ -375,45 +308,45 @@ describe('FUNCTIONAL API - HOTEL', function(){
                 })
         })
 
-        it('should response ok (update Hotel)', function (done) {
-            validHotel.townId = validTown.id
+        it('should response ok (update Activity)', function (done) {
+            validActivity.townId = validTown.id
 
-            validHotel.name = faker.lorem.sentence(),
-            validHotel.description = faker.lorem.sentence()
-            validHotel.location = getPoint(faker.address.latitude(), faker.address.longitude())
-            validHotel.address = faker.address.streetAddress()
-            validHotel.phone = faker.phone.phoneNumber()
-            validHotel.email = faker.internet.email()
-            validHotel.web = faker.internet.url()
+            validActivity.name = faker.lorem.sentence(),
+            validActivity.description = faker.lorem.sentence()
+            validActivity.location = getPoint(faker.address.latitude(), faker.address.longitude())
+            validActivity.address = faker.address.streetAddress()
+            validActivity.phone = faker.phone.phoneNumber()
+            validActivity.email = faker.internet.email()
+            validActivity.web = faker.internet.url()
 
             request
-                .put('/hotel/' + validHotel.slug)
+                .put('/activity/' + validActivity.slug)
                 .set('Authorization', validToken)
-                .send(validHotel)
+                .send(validActivity)
                 .expect(200)
                 .end(function (err, res) {
                     expect(err).to.be.null
                     expect(res.body.status).to.be.true
-                    expect(res.body.data).to.be.deep.equal(validHotel)
+                    expect(res.body.data).to.be.deep.equal(validActivity)
                     done()
                 })
         })
 
         it('should response ok (update 2 fields)', function (done) {
-            validHotel.townId = validTown.id
+            validActivity.townId = validTown.id
 
-            validHotel.phone = faker.phone.phoneNumber()
-            validHotel.email = null
+            validActivity.phone = faker.phone.phoneNumber()
+            validActivity.email = null
 
             request
-                .put('/hotel/' + validHotel.slug)
+                .put('/activity/' + validActivity.slug)
                 .set('Authorization', validToken)
-                .send(validHotel)
+                .send(validActivity)
                 .expect(200)
                 .end(function (err, res) {
                     expect(err).to.be.null
                     expect(res.body.status).to.be.true
-                    expect(res.body.data).to.be.deep.equal(validHotel)
+                    expect(res.body.data).to.be.deep.equal(validActivity)
                     done()
                 })
         })
@@ -422,8 +355,8 @@ describe('FUNCTIONAL API - HOTEL', function(){
             const error = new exception.ValidationPublicKeyFailed()
 
             request
-                .put('/hotel/' + validHotel.slug)
-                .send(validHotel)
+                .put('/activity/' + validActivity.slug)
+                .send(validActivity)
                 .expect(error.statusCode)
                 .end(function (err, res) {
                     expect(err).to.be.null
@@ -438,11 +371,11 @@ describe('FUNCTIONAL API - HOTEL', function(){
                 })
         })
 
-        it('should fail deleting hotel without token', function (done) {
+        it('should fail deleting activity without token', function (done) {
             const error = new exception.ValidationPublicKeyFailed()
 
             request
-                .delete('/hotel/' + validHotel.slug)
+                .delete('/activity/' + validActivity.slug)
                 .expect(error.statusCode)
                 .end(function (err, res) {
                     expect(err).to.be.null
@@ -457,9 +390,9 @@ describe('FUNCTIONAL API - HOTEL', function(){
                 })
         })
 
-        it('should response ok (remove hotel)', function (done) {
+        it('should response ok (remove activity)', function (done) {
             request
-                .delete('/hotel/' + validHotel.slug)
+                .delete('/activity/' + validActivity.slug)
                 .set('Authorization', validToken)
                 .expect(200)
                 .end(function (err, res) {
@@ -474,7 +407,7 @@ describe('FUNCTIONAL API - HOTEL', function(){
             let error = new exception.EntityNotExists()
 
             request
-                .get('/hotel/' + validHotel.slug)
+                .get('/activity/' + validActivity.slug)
                 .expect(error.statusCode)
                 .end(function (err, res) {
                     expect(err).to.be.null
@@ -489,15 +422,15 @@ describe('FUNCTIONAL API - HOTEL', function(){
                 })
         })
 
-        it('should response ok (get hotels after remove existing content)', function (done) {
+        it('should response ok (get activities after remove existing content)', function (done) {
             request
-                .get('/hotel')
+                .get('/activity')
                 .expect(200)
                 .end(function (err, res) {
                     expect(err).to.be.null
                     expect(res.body.status).to.be.true
-                    expect(res.body.data).to.have.property('hotels')
-                    expect(res.body.data.hotels).to.be.an('Array').to.be.empty
+                    expect(res.body.data).to.have.property('activities')
+                    expect(res.body.data.activities).to.be.an('Array').to.be.empty
                     expect(res.body.data).to.have.property('pagination')
                     expect(res.body.data.pagination).to.be.deep.equal(pagination)
                     done()
@@ -531,68 +464,54 @@ describe('FUNCTIONAL API - HOTEL', function(){
                 })
         })
 
-        it('get hotel types', function (done) {
-            request
-            .get('/hoteltypes')
-            .set('Authorization', validToken)
-            .expect(200)
-            .end(function (err, res) {
-                expect(err).to.be.null
-                expect(res.body.status).to.be.true
-                expect(res.body.data).to.have.property('types')
-                expect(res.body.data.types).to.be.deep.equal(Hotel.TYPES)
-                done()
-            })
-        })
-
-        it('should work adding Hotel', function (done) {
-            validHotel.townId = validTown.id
-            validHotel.name = faker.lorem.sentence(),
+        it('should work adding Activity', function (done) {
+            validActivity.townId = validTown.id
+            validActivity.name = faker.lorem.sentence(),
 
             request
-                .post('/hotel')
+                .post('/activity')
                 .set('Authorization', validToken)
-                .send(validHotel)
+                .send(validActivity)
                 .expect(200)
                 .end(function (err, res) {
                     expect(err).to.be.null
                     expect(res.body.status).to.be.true
-                    validHotel.slug = slugify(validHotel.name)
+                    validActivity.slug = slugify(validActivity.name)
                     expect(res.body.data).to.have.property('id')
-                    validHotel.id = res.body.data.id
+                    validActivity.id = res.body.data.id
                     expect(res.body.data).to.have.property('image')
-                    validHotel.image = res.body.data.image
-                    expect(res.body.data).to.be.deep.equal(validHotel)
+                    validActivity.image = res.body.data.image
+                    expect(res.body.data).to.be.deep.equal(validActivity)
                     done()
                 })
         })
 
-        it('should work updating hotel', function (done) {
-            validHotel.townId = validTown.id
+        it('should work updating activity', function (done) {
+            validActivity.townId = validTown.id
 
-            validHotel.description = faker.lorem.sentence()
-            validHotel.location = getPoint(faker.address.latitude(), faker.address.longitude())
-            validHotel.address = faker.address.streetAddress()
-            validHotel.phone = faker.phone.phoneNumber()
-            validHotel.email = faker.internet.email()
-            validHotel.web = faker.internet.url()
+            validActivity.description = faker.lorem.sentence()
+            validActivity.location = getPoint(faker.address.latitude(), faker.address.longitude())
+            validActivity.address = faker.address.streetAddress()
+            validActivity.phone = faker.phone.phoneNumber()
+            validActivity.email = faker.internet.email()
+            validActivity.web = faker.internet.url()
 
             request
-                .put('/hotel/' + validHotel.slug)
+                .put('/activity/' + validActivity.slug)
                 .set('Authorization', validToken)
-                .send(validHotel)
+                .send(validActivity)
                 .expect(200)
                 .end(function (err, res) {
                     expect(err).to.be.null
                     expect(res.body.status).to.be.true
-                    expect(res.body.data).to.be.deep.equal(validHotel)
+                    expect(res.body.data).to.be.deep.equal(validActivity)
                     done()
                 })
         })
 
-        it('should work deleting hotel', function (done) {
+        it('should work deleting activity', function (done) {
             request
-                .delete('/hotel/' + validHotel.slug)
+                .delete('/activity/' + validActivity.slug)
                 .set('Authorization', validToken)
                 .expect(200)
                 .end(function (err, res) {
@@ -654,13 +573,13 @@ describe('FUNCTIONAL API - HOTEL', function(){
                 })
         })
 
-        it('should fail updating Hotel if the user is not the owner', function (done) {
+        it('should fail updating Activity if the user is not the owner', function (done) {
             let error = new exception.EntityNotExists()
 
             request
-                .put('/hotel/' + validHotel.slug)
+                .put('/activity/' + validActivity.slug)
                 .set('Authorization', validToken)
-                .send(validHotel)
+                .send(validActivity)
                 .expect(error.statusCode)
                 .end(function (err, res) {
                     expect(err).to.be.null
@@ -675,11 +594,11 @@ describe('FUNCTIONAL API - HOTEL', function(){
                 })
         })
 
-        it('should fail deleting Hotel if the user is not the owner', function (done) {
+        it('should fail deleting Activity if the user is not the owner', function (done) {
             let error = new exception.EntityNotExists()
 
             request
-                .delete('/hotel/' + validHotel.slug)
+                .delete('/activity/' + validActivity.slug)
                 .set('Authorization', validToken)
                 .expect(error.statusCode)
                 .end(function (err, res) {

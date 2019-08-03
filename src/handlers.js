@@ -24,12 +24,12 @@ module.exports = function (app) {
 
     // 50x
     app.use(function (err, req, res, next) {
+        debug(err)
+
         if (!(err instanceof exception.CustomException)) {
             err = new exception.SomethingWasWrong(err)
             err.code = 500
         }
-
-        debug(err)
 
         const response = {
             status: false,
