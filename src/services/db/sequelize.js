@@ -2,24 +2,26 @@ const path = require('path')
 const fs = require('fs')
 const Sequelize = require('sequelize')
 const debug = require('debug')('app:sequelize')
-const parameters = requireRoot('../parameters')
+const parameters = requireRoot('../config/database')
+
+const config = getConfig()
+
+function getConfig () {
+    if (process.env.PRO_MODE)
+        return parameters.production
+    else if (process.env.TEST_MODE)
+        return parameters.test
+    else
+        return parameters.development
+}
 
 function initConnection () {
-    if (process.env.TEST_MODE) {
-        parameters.postgres = parameters.test.postgres
-    }
-
-    return new Sequelize(parameters.postgres.database, parameters.postgres.username, parameters.postgres.password, {
-        host: parameters.postgres.host,
-        port: parameters.postgres.port,
-        dialect: 'postgres',
-        logging: false,
-
-        pool: {
-            max: 16,
-            min: 0,
-            idle: 10000
-        }
+    return new Sequelize(config.database, config.username, config.password, {
+        host: config.host,
+        port: config.port,
+        dialect: config.dialect,
+        logging: config.logging,
+        pool: config.pool
     })
 }
 
