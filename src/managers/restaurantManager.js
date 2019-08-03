@@ -2,25 +2,25 @@
 
 const Promise = require('bluebird')
 
-const Hotel = require('../appManager').models.Hotel
+const Restaurant = require('../appManager').models.Restaurant
 const processMediaUpload = require('../services/processMediaUpload')
 const { slugify } = require('../services/utils')
 const { addSRID } = require('../services/geom')
 const exception = require('../services/customExceptions')
 const parameters = requireRoot('../parameters')
-const debug = require('debug')('app:managers:hotel')
+const debug = require('debug')('app:managers:restaurant')
 
 module.exports = {
     async getAll (pagination) {
-        const hotels = await Hotel.getAll(pagination)
-        const hotelsInfo = await Promise.all(
-            Promise.map(hotels, async function (hotel) {
-                return hotel.getPublicInfo()
+        const restaurants = await Restaurant.getAll(pagination)
+        const restaurantsInfo = await Promise.all(
+            Promise.map(restaurants, async function (restaurant) {
+                return restaurant.getPublicInfo()
             })
         )
 
         return {
-            hotels: hotelsInfo,
+            restaurants: restaurantsInfo,
             pagination: {
                 page: pagination.page,
                 limit: pagination.limit
@@ -28,9 +28,9 @@ module.exports = {
         }
     },
 
-    async create (user, { name, type, townId, description, location, address, phone, email, web }, image) {
-        if (!name || !description || !location || !Hotel.TYPES.includes(type) || !townId) {
-            throw new exception.ValidationHotel()
+    async create (user, { name, townId, description, location, address, phone, email, web }, image) {
+        if (!name || !description || !location || !townId) {
+            throw new exception.ValidationRestaurant()
         }
 
         if (location) {
@@ -57,10 +57,9 @@ module.exports = {
             }
         }
 
-        let hotel = new Hotel({
+        let restaurant = new Restaurant({
             name,
             slug: slugify(name),
-            type,
             description,
             image,
             location,
@@ -73,7 +72,7 @@ module.exports = {
         })
 
         try {
-            hotel = await hotel.save()
+            restaurant = await restaurant.save()
         } catch (error) {
             if (error.name === 'SequelizeUniqueConstraintError') {
                 throw new exception.EntityAlreadyExists()
@@ -82,12 +81,12 @@ module.exports = {
             throw new exception.SomethingWasWrong()
         }
 
-        return hotel.getPublicInfo()
+        return restaurant.getPublicInfo()
     },
 
-    async update (hotel, { name, type, townId, description, location, address, phone, email, web }, image) {
-        if (!name || !description || !location || !Hotel.TYPES.includes(type) || !townId) {
-            throw new exception.ValidationHotel()
+    async update (restaurant, { name, townId, description, location, address, phone, email, web }, image) {
+        if (!name || !description || !location || !townId) {
+            throw new exception.ValidationRestaurant()
         }
 
         if (location) {
@@ -102,7 +101,7 @@ module.exports = {
             location = addSRID(location)
         }
 
-        if (image && hotel.image !== image) {
+        if (image && restaurant.image !== image) {
             image = await processMediaUpload.preprocessImages([image])
 
             try {
@@ -113,42 +112,37 @@ module.exports = {
                 throw new exception.UploadingImagesError()
             }
         } else {
-            image = hotel.image
+            image = restaurant.image
         }
 
-        hotel.name = name
-        hotel.type = type
-        hotel.description = description
-        hotel.image = image || null
-        hotel.location = location
-        hotel.address = address
-        hotel.phone = phone
-        hotel.email = email
-        hotel.web = web
-        hotel.townId = townId
+        restaurant.name = name
+        restaurant.description = description
+        restaurant.image = image || null
+        restaurant.location = location
+        restaurant.address = address
+        restaurant.phone = phone
+        restaurant.email = email
+        restaurant.web = web
+        restaurant.townId = townId
 
         try {
-            hotel = await hotel.save()
+            restaurant = await restaurant.save()
         } catch (error) {
             debug(error)
             throw new exception.SomethingWasWrong()
         }
 
-        return hotel.getPublicInfo()
+        return restaurant.getPublicInfo()
     },
 
-    getOne (hotel) {
-        return hotel.getPublicInfo()
+    getOne (restaurant) {
+        return restaurant.getPublicInfo()
     },
 
-    async remove (hotel) {
-        hotel.removed = true
-        hotel.save()
+    async remove (restaurant) {
+        restaurant.removed = true
+        restaurant.save()
 
         return true
-    },
-
-    getTypes () {
-        return { types: Hotel.TYPES }
-    },
+    }
 }

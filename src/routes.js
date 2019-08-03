@@ -9,6 +9,7 @@ const auth = requireRoot('services/auth/auth')
 const getTownMiddleware = require('./middlewares/getTown')
 const getActivityTypeMiddleware = require('./middlewares/getActivityType')
 const getHotelMiddleware = require('./middlewares/getHotel')
+const getRestaurantMiddleware = require('./middlewares/getRestaurant')
 
 const mainController = require('./controllers/mainController')
 const authController = require('./controllers/authController')
@@ -16,6 +17,7 @@ const userController = require('./controllers/userController')
 const townController = require('./controllers/townController')
 const activityTypeController = require('./controllers/activityTypeController')
 const hotelController = require('./controllers/hotelController')
+const restaurantController = require('./controllers/restaurantController')
 
 module.exports = function (app) {
     // Test routes
@@ -69,4 +71,14 @@ module.exports = function (app) {
     hotelRouter.post('/', auth.validate, multer.single('image'), hotelController.create)
     hotelRouter.put('/:slug', auth.validate, multer.single('image'), getHotelMiddleware(true), hotelController.update)
     hotelRouter.delete('/:slug', auth.validate, getHotelMiddleware(true), hotelController.remove)
+
+    // Restaurants routes
+    let restaurantRouter = express.Router({ mergeParams: true })
+    app.use('/restaurant', restaurantRouter)
+
+    restaurantRouter.get('/', restaurantController.getAll)
+    restaurantRouter.get('/:slug', getRestaurantMiddleware(), restaurantController.getOne)
+    restaurantRouter.post('/', auth.validate, multer.single('image'), restaurantController.create)
+    restaurantRouter.put('/:slug', auth.validate, multer.single('image'), getRestaurantMiddleware(true), restaurantController.update)
+    restaurantRouter.delete('/:slug', auth.validate, getRestaurantMiddleware(true), restaurantController.remove)
 }

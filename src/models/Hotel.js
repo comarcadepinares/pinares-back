@@ -66,7 +66,8 @@ module.exports = (sequelize, DataTypes) => {
                 address: this.address,
                 phone: this.phone,
                 email: this.email,
-                web: this.web
+                web: this.web,
+                townId: this.townId
             }
 
             return publicInfo
