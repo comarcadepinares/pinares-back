@@ -2,3 +2,4 @@
 node_modules
 npm-debug.log
 parameters.json
+config/database.json
