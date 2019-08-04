@@ -197,9 +197,7 @@ describe('FUNCTIONAL API - ACTIVITY OPTION', function(){
                 recomendations: faker.lorem.sentence(),
                 people: [ActivityOption.PEOPLE_TYPES.CHILDREN, ActivityOption.PEOPLE_TYPES.OLD],
                 minPax: faker.random.number(),
-                maxPax: faker.random.number(),
-                activityId: validActivity.id,
-                townId: validTown.id
+                maxPax: faker.random.number()
             }
 
             request
@@ -212,8 +210,6 @@ describe('FUNCTIONAL API - ACTIVITY OPTION', function(){
                     expect(res.body.status).to.be.true
                     expect(res.body.data).to.have.property('id')
                     validActivityOption.id = res.body.data.id
-                    delete validActivityOption.activityId
-                    delete validActivityOption.townId
                     expect(res.body.data).to.be.deep.equal(validActivityOption)
                     done()
                 })
@@ -287,9 +283,6 @@ describe('FUNCTIONAL API - ACTIVITY OPTION', function(){
         })
 
         it('should response ok (update Activity)', function (done) {
-            validActivityOption.townId = validTown.id
-            validActivityOption.activityId = validActivity.id
-
             validActivityOption.schedule = {
                 saturday: [{start: '00:00', end: '00:00'}],
                 sunday: [{start: '00:00', end: '00:00'}]
@@ -304,8 +297,6 @@ describe('FUNCTIONAL API - ACTIVITY OPTION', function(){
                 .end(function (err, res) {
                     expect(err).to.be.null
                     expect(res.body.status).to.be.true
-                    delete validActivityOption.activityId
-                    delete validActivityOption.townId
                     expect(res.body.data).to.be.deep.equal(validActivityOption)
                     done()
                 })
@@ -425,8 +416,6 @@ describe('FUNCTIONAL API - ACTIVITY OPTION', function(){
         })
 
         it('should work adding Activity', function (done) {
-            validActivityOption.townId = validTown.id
-            validActivityOption.activityId = validActivity.id
             validActivityOption.description = faker.lorem.sentence()
 
             request
@@ -439,16 +428,12 @@ describe('FUNCTIONAL API - ACTIVITY OPTION', function(){
                     expect(res.body.status).to.be.true
                     expect(res.body.data).to.have.property('id')
                     validActivityOption.id = res.body.data.id
-                    delete validActivityOption.activityId
-                    delete validActivityOption.townId
                     expect(res.body.data).to.be.deep.equal(validActivityOption)
                     done()
                 })
         })
 
         it('should work updating activity', function (done) {
-            validActivityOption.townId = validTown.id
-            validActivityOption.activityId = validActivity.id
             validActivityOption.description = faker.lorem.sentence()
 
             request
@@ -459,8 +444,6 @@ describe('FUNCTIONAL API - ACTIVITY OPTION', function(){
                 .end(function (err, res) {
                     expect(err).to.be.null
                     expect(res.body.status).to.be.true
-                    delete validActivityOption.activityId
-                    delete validActivityOption.townId
                     expect(res.body.data).to.be.deep.equal(validActivityOption)
                     done()
                 })
