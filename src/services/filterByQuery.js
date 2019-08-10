@@ -1,7 +1,5 @@
 'use strict'
 
-const debug = require('debug')('app:services:filterByQuery')
-
 const VALID_FIELDS = ['highlight']
 
 module.exports = function (query) {
@@ -12,8 +10,6 @@ module.exports = function (query) {
             filter[prop] = query[prop]
         }
     }
-
-    debug(query, filter)
 
     return filter
 }
