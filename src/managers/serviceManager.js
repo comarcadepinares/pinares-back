@@ -28,7 +28,7 @@ module.exports = {
         }
     },
 
-    async create (user, { name, type, townId, description, location, address, phone, email, web }, image) {
+    async create (user, { name, type, townId, description, location, address, phone, email, web, highlight }, image) {
         if (!name || !description || !location || !Service.TYPES.includes(type) || !townId) {
             throw new exception.ValidationService()
         }
@@ -60,6 +60,7 @@ module.exports = {
         let service = new Service({
             name,
             slug: slugify(name),
+            highlight,
             type,
             description,
             image,
@@ -86,7 +87,7 @@ module.exports = {
         return service.getPublicInfo()
     },
 
-    async update (service, { name, type, townId, description, location, address, phone, email, web }, image) {
+    async update (service, { name, type, townId, description, location, address, phone, email, web, highlight }, image) {
         if (!name || !description || !location || !Service.TYPES.includes(type) || !townId) {
             throw new exception.ValidationService()
         }
@@ -118,6 +119,7 @@ module.exports = {
         }
 
         service.name = name
+        service.highlight = highlight
         service.type = type
         service.description = description
         service.image = image || null

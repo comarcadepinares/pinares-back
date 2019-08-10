@@ -30,7 +30,7 @@ module.exports = {
         }
     },
 
-    async create (user, { name, townId, activityTypeId, description, location, address, phone, email, web }, image) {
+    async create (user, { name, townId, activityTypeId, description, location, address, phone, email, web, highlight }, image) {
         if (!name || !description || !location || !townId || !activityTypeId) {
             throw new exception.ValidationActivity()
         }
@@ -62,6 +62,7 @@ module.exports = {
         let activity = new Activity({
             name,
             slug: slugify(name),
+            highlight,
             description,
             image,
             images: [],
@@ -88,7 +89,7 @@ module.exports = {
         return await getActivityWithOptions(activity)
     },
 
-    async update (activity, { name, townId, activityTypeId, description, location, address, phone, email, web }, image) {
+    async update (activity, { name, townId, activityTypeId, description, location, address, phone, email, web, highlight }, image) {
         if (!name || !description || !location || !townId || !activityTypeId) {
             throw new exception.ValidationActivity()
         }
@@ -120,6 +121,7 @@ module.exports = {
         }
 
         activity.name = name
+        activity.highlight = highlight
         activity.description = description
         activity.image = image || null
         activity.location = location

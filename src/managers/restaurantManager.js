@@ -28,7 +28,7 @@ module.exports = {
         }
     },
 
-    async create (user, { name, townId, description, location, address, phone, email, web }, image) {
+    async create (user, { name, townId, description, location, address, phone, email, web, highlight }, image) {
         if (!name || !description || !location || !townId) {
             throw new exception.ValidationRestaurant()
         }
@@ -60,6 +60,7 @@ module.exports = {
         let restaurant = new Restaurant({
             name,
             slug: slugify(name),
+            highlight,
             description,
             image,
             images: [],
@@ -85,7 +86,7 @@ module.exports = {
         return restaurant.getPublicInfo()
     },
 
-    async update (restaurant, { name, townId, description, location, address, phone, email, web }, image) {
+    async update (restaurant, { name, townId, description, location, address, phone, email, web, highlight }, image) {
         if (!name || !description || !location || !townId) {
             throw new exception.ValidationRestaurant()
         }
@@ -117,6 +118,7 @@ module.exports = {
         }
 
         restaurant.name = name
+        restaurant.highlight = highlight
         restaurant.description = description
         restaurant.image = image || null
         restaurant.location = location

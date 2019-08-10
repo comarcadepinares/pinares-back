@@ -28,7 +28,7 @@ module.exports = {
         }
     },
 
-    async create (user, { name, type, townId, description, location, address, phone, email, web }, image) {
+    async create (user, { name, type, townId, description, location, address, phone, email, web, highlight }, image) {
         if (!name || !description || !location || !Hotel.TYPES.includes(type) || !townId) {
             throw new exception.ValidationHotel()
         }
@@ -60,6 +60,7 @@ module.exports = {
         let hotel = new Hotel({
             name,
             slug: slugify(name),
+            highlight,
             type,
             description,
             image,
@@ -86,7 +87,7 @@ module.exports = {
         return hotel.getPublicInfo()
     },
 
-    async update (hotel, { name, type, townId, description, location, address, phone, email, web }, image) {
+    async update (hotel, { name, type, townId, description, location, address, phone, email, web, highlight }, image) {
         if (!name || !description || !location || !Hotel.TYPES.includes(type) || !townId) {
             throw new exception.ValidationHotel()
         }
@@ -118,6 +119,7 @@ module.exports = {
         }
 
         hotel.name = name
+        hotel.highlight = highlight
         hotel.type = type
         hotel.description = description
         hotel.image = image || null
