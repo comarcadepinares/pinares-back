@@ -153,7 +153,10 @@ describe('FUNCTIONAL API - ACTIVITY OPTION', function(){
                 phone: faker.phone.phoneNumber(),
                 email: faker.internet.email(),
                 web: faker.internet.url(),
-                image: null
+                image: null,
+                highlight: false,
+                options: [],
+                images: []
             }
 
             request
@@ -167,7 +170,6 @@ describe('FUNCTIONAL API - ACTIVITY OPTION', function(){
                     validActivity.slug = slugify(validActivity.name)
                     expect(res.body.data).to.have.property('id')
                     validActivity.id = res.body.data.id
-                    validActivity.options = []
                     expect(res.body.data).to.be.deep.equal(validActivity)
                     done()
                 })

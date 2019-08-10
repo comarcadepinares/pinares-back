@@ -3,7 +3,13 @@
 const baseExtended = require('./_BaseExtended')
 
 module.exports = (sequelize, DataTypes) => {
-    let Restaurant = sequelize.define('restaurant', baseExtended, {
+    let Restaurant = sequelize.define('restaurant', Object.assign({
+        highlight: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
+        }
+    }, baseExtended), {
         timestamps: true,
         defaultScope: {
             where: {
@@ -47,12 +53,14 @@ module.exports = (sequelize, DataTypes) => {
                 slug: this.slug,
                 description: this.description,
                 image: this.image,
+                images: this.images,
                 location: this.location,
                 address: this.address,
                 phone: this.phone,
                 email: this.email,
                 web: this.web,
-                townId: this.townId
+                townId: this.townId,
+                highlight: this.highlight
             }
 
             return publicInfo

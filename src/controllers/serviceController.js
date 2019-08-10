@@ -37,6 +37,24 @@ module.exports = {
         next()
     },
 
+    async addImage (req, res, next) {
+        try {
+            res.locals.response = await serviceManager.addImage(res.locals.service, req.file)
+            next()
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    async removeImage (req, res, next) {
+        try {
+            res.locals.response = await serviceManager.removeImage(res.locals.service, req.body)
+            next()
+        } catch (error) {
+            next(error)
+        }
+    },
+
     getTypes (req, res, next) {
         res.locals.response = serviceManager.getTypes()
         next()

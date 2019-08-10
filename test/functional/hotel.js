@@ -127,7 +127,9 @@ describe('FUNCTIONAL API - HOTEL', function(){
                     address: faker.address.streetAddress(),
                     phone: faker.phone.phoneNumber(),
                     email: faker.internet.email(),
-                    web: faker.internet.url()
+                    web: faker.internet.url(),
+                    highlight: false,
+                    images: []
                 }
 
                 request
@@ -152,8 +154,72 @@ describe('FUNCTIONAL API - HOTEL', function(){
                         validHotel.id = res.body.data.id
                         expect(res.body.data).to.have.property('image')
                         validHotel.image = res.body.data.image
-                        delete validHotel.townId
                         expect(res.body.data).to.be.deep.equal(validHotel)
+                        done()
+                    })
+            })
+
+            it('should response ok (add image)', function (done) {
+                request
+                    .post(`/hotel/${validHotel.slug}/image`)
+                    .set('Authorization', validToken)
+                    .attach('image', __dirname + '/../fixtures/duruelo.png')
+                    .expect(200)
+                    .end(function (err, res) {
+                        expect(err).to.be.null
+                        expect(res.body.status).to.be.true
+                        validHotel.images = res.body.data.images
+                        expect(res.body.data).to.be.deep.equal(validHotel)
+                        expect(res.body.data.images.length).to.be.deep.equal(1)
+                        done()
+                    })
+            })
+
+            it('should response ok (exists 1 with 1 image)', function (done) {
+                request
+                    .get('/hotel')
+                    .expect(200)
+                    .end(function (err, res) {
+                        expect(err).to.be.null
+                        expect(res.body.status).to.be.true
+                        expect(res.body.data).to.have.property('hotels')
+                        expect(res.body.data.hotels).to.be.an('Array')
+                        expect(res.body.data.hotels.length).to.be.equal(1)
+                        expect(res.body.data.hotels[0]).to.be.deep.equal(validHotel)
+                        expect(res.body.data.hotels[0].images.length).to.be.equal(1)
+                        expect(res.body.data).to.have.property('pagination')
+                        expect(res.body.data.pagination).to.be.deep.equal(pagination)
+                        done()
+                    })
+            })
+
+            it('should response ok (remove image)', function (done) {
+                request
+                    .delete(`/hotel/${validHotel.slug}/image`)
+                    .set('Authorization', validToken)
+                    .send({image: validHotel.images[0]})
+                    .expect(200)
+                    .end(function (err, res) {
+                        expect(err).to.be.null
+                        expect(res.body.status).to.be.true
+                        validHotel.images = []
+                        expect(res.body.data).to.be.deep.equal(validHotel)
+                        done()
+                    })
+            })
+
+            it('should response ok (exists 1 with 0 images)', function (done) {
+                request
+                    .get('/hotel')
+                    .expect(200)
+                    .end(function (err, res) {
+                        expect(err).to.be.null
+                        expect(res.body.status).to.be.true
+                        expect(res.body.data).to.have.property('hotels')
+                        expect(res.body.data.hotels).to.be.an('Array')
+                        expect(res.body.data.hotels[0]).to.be.deep.equal(validHotel)
+                        expect(res.body.data).to.have.property('pagination')
+                        expect(res.body.data.pagination).to.be.deep.equal(pagination)
                         done()
                     })
             })
@@ -170,7 +236,9 @@ describe('FUNCTIONAL API - HOTEL', function(){
                 phone: faker.phone.phoneNumber(),
                 email: faker.internet.email(),
                 web: faker.internet.url(),
-                image: null
+                image: null,
+                highlight: false,
+                images: []
             }
 
             request
@@ -305,7 +373,7 @@ describe('FUNCTIONAL API - HOTEL', function(){
                 })
         })
 
-        it('should response ok (exists 1)', function (done) {
+        it('should response ok (exists 11)', function (done) {
             request
                 .get('/hotel')
                 .expect(200)

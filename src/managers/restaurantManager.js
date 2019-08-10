@@ -62,6 +62,7 @@ module.exports = {
             slug: slugify(name),
             description,
             image,
+            images: [],
             location,
             address,
             phone,
@@ -144,5 +145,31 @@ module.exports = {
         restaurant.save()
 
         return true
+    },
+
+    async addImage (restaurant, image) {
+        try {
+            image = await processMediaUpload.preprocessImages([image])
+            // upload to S3
+            image = await processMediaUpload.images(image, parameters.AWS.folder)
+            image = image[0]
+        } catch (error) {
+            throw new exception.UploadingImagesError()
+        }
+
+        restaurant.images.push(image)
+        restaurant.images = restaurant.images
+        await restaurant.save()
+
+        return restaurant.getPublicInfo()
+    },
+
+    async removeImage (restaurant, { image }) {
+        if (image) {
+            restaurant.images = restaurant.images.filter(i => i !== image)
+            await restaurant.save()
+        }
+
+        return restaurant.getPublicInfo()
     }
 }

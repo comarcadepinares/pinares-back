@@ -64,6 +64,7 @@ module.exports = {
             slug: slugify(name),
             description,
             image,
+            images: [],
             location,
             address,
             phone,
@@ -148,6 +149,32 @@ module.exports = {
         activity.save()
 
         return true
+    },
+
+    async addImage (activity, image) {
+        try {
+            image = await processMediaUpload.preprocessImages([image])
+            // upload to S3
+            image = await processMediaUpload.images(image, parameters.AWS.folder)
+            image = image[0]
+        } catch (error) {
+            throw new exception.UploadingImagesError()
+        }
+
+        activity.images.push(image)
+        activity.images = activity.images
+        await activity.save()
+
+        return await getActivityWithOptions(activity)
+    },
+
+    async removeImage (activity, { image }) {
+        if (image) {
+            activity.images = activity.images.filter(i => i !== image)
+            await activity.save()
+        }
+
+        return await getActivityWithOptions(activity)
     }
 }
 

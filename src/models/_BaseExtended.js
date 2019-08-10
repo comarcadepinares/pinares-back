@@ -19,7 +19,7 @@ module.exports = Object.assign({
         allowNull: false
     },
     description: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(4096),
         allowNull: false
     },
     image: {

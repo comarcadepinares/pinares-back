@@ -35,5 +35,23 @@ module.exports = {
     async remove (req, res, next) {
         res.locals.response = await restaurantManager.remove(res.locals.restaurant)
         next()
+    },
+
+    async addImage (req, res, next) {
+        try {
+            res.locals.response = await restaurantManager.addImage(res.locals.restaurant, req.file)
+            next()
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    async removeImage (req, res, next) {
+        try {
+            res.locals.response = await restaurantManager.removeImage(res.locals.restaurant, req.body)
+            next()
+        } catch (error) {
+            next(error)
+        }
     }
 }

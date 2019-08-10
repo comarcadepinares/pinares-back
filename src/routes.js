@@ -26,11 +26,11 @@ const restaurantController = require('./controllers/restaurantController')
 const serviceController = require('./controllers/serviceController')
 
 module.exports = function (app) {
-    // Test routes
+    // Test
     app.get('/', mainController.index)
     app.get('/logged', auth.validate, mainController.logged)
 
-    // Auth routes
+    // Auth
     let authRouter = express.Router({ mergeParams: true })
     app.use('/auth', authRouter)
 
@@ -40,14 +40,14 @@ module.exports = function (app) {
     authRouter.post('/login', authController.login)
     authRouter.post('/change-password', auth.validate, authController.changePassword)
 
-    // User routes
+    // User
     let userRouter = express.Router({ mergeParams: true })
     app.use('/user', userRouter)
 
     userRouter.get('/', auth.validate, userController.getProfile)
     userRouter.put('/', auth.validate, userController.setProfile)
 
-    // Town routes
+    // Town
     let townRouter = express.Router({ mergeParams: true })
     app.use('/town', townRouter)
 
@@ -57,7 +57,7 @@ module.exports = function (app) {
     townRouter.put('/:slug', auth.validate, auth.superadmin, multer.single('image'), getTownMiddleware(true), townController.update)
     townRouter.delete('/:slug', auth.validate, auth.superadmin, getTownMiddleware(true), townController.remove)
 
-    // Town routes
+    // Town
     let activityTypeRouter = express.Router({ mergeParams: true })
     app.use('/activity-type', activityTypeRouter)
 
@@ -67,7 +67,7 @@ module.exports = function (app) {
     activityTypeRouter.put('/:slug', auth.validate, auth.superadmin, multer.single('image'), getActivityTypeMiddleware(true), activityTypeController.update)
     activityTypeRouter.delete('/:slug', auth.validate, auth.superadmin, getActivityTypeMiddleware(true), activityTypeController.remove)
 
-    // Activity routes
+    // Activity
     let activityRouter = express.Router({ mergeParams: true })
     app.use('/activity', activityRouter)
 
@@ -76,6 +76,8 @@ module.exports = function (app) {
     activityRouter.post('/', auth.validate, multer.single('image'), activityController.create)
     activityRouter.put('/:slug', auth.validate, multer.single('image'), getActivityMiddleware(true), activityController.update)
     activityRouter.delete('/:slug', auth.validate, getActivityMiddleware(true), activityController.remove)
+    activityRouter.post('/:slug/image', auth.validate, getActivityMiddleware(true), multer.single('image'), activityController.addImage)
+    activityRouter.delete('/:slug/image', auth.validate, getActivityMiddleware(true), activityController.removeImage)
 
     // Activity options
     activityRouter.get('/:slug/option/', getActivityMiddleware(), activityOptionController.getAll)
@@ -84,7 +86,6 @@ module.exports = function (app) {
     activityRouter.put('/:slug/option/:id', auth.validate, getActivityMiddleware(true), getActivityOptionMiddleware(true), activityOptionController.update)
     activityRouter.delete('/:slug/option/:id', auth.validate, getActivityMiddleware(true), getActivityOptionMiddleware(true), activityOptionController.remove)
 
-    // Hotel routes
     let hotelRouter = express.Router({ mergeParams: true })
     app.use('/hotel', hotelRouter)
 
@@ -94,8 +95,10 @@ module.exports = function (app) {
     hotelRouter.post('/', auth.validate, multer.single('image'), hotelController.create)
     hotelRouter.put('/:slug', auth.validate, multer.single('image'), getHotelMiddleware(true), hotelController.update)
     hotelRouter.delete('/:slug', auth.validate, getHotelMiddleware(true), hotelController.remove)
+    hotelRouter.post('/:slug/image', auth.validate, getHotelMiddleware(true), multer.single('image'), hotelController.addImage)
+    hotelRouter.delete('/:slug/image', auth.validate, getHotelMiddleware(true), hotelController.removeImage)
 
-    // Restaurants routes
+    // Restaurants
     let restaurantRouter = express.Router({ mergeParams: true })
     app.use('/restaurant', restaurantRouter)
 
@@ -104,8 +107,10 @@ module.exports = function (app) {
     restaurantRouter.post('/', auth.validate, multer.single('image'), restaurantController.create)
     restaurantRouter.put('/:slug', auth.validate, multer.single('image'), getRestaurantMiddleware(true), restaurantController.update)
     restaurantRouter.delete('/:slug', auth.validate, getRestaurantMiddleware(true), restaurantController.remove)
+    restaurantRouter.post('/:slug/image', auth.validate, getRestaurantMiddleware(true), multer.single('image'), restaurantController.addImage)
+    restaurantRouter.delete('/:slug/image', auth.validate, getRestaurantMiddleware(true), restaurantController.removeImage)
 
-    // Service routes
+    // Service
     let serviceRouter = express.Router({ mergeParams: true })
     app.use('/service', serviceRouter)
 
@@ -115,4 +120,6 @@ module.exports = function (app) {
     serviceRouter.post('/', auth.validate, multer.single('image'), serviceController.create)
     serviceRouter.put('/:slug', auth.validate, multer.single('image'), getServiceMiddleware(true), serviceController.update)
     serviceRouter.delete('/:slug', auth.validate, getServiceMiddleware(true), serviceController.remove)
+    serviceRouter.post('/:slug/image', auth.validate, getServiceMiddleware(true), multer.single('image'), serviceController.addImage)
+    serviceRouter.delete('/:slug/image', auth.validate, getServiceMiddleware(true), serviceController.removeImage)
 }

@@ -151,7 +151,10 @@ describe('FUNCTIONAL API - ACTIVITY', function(){
                     address: faker.address.streetAddress(),
                     phone: faker.phone.phoneNumber(),
                     email: faker.internet.email(),
-                    web: faker.internet.url()
+                    web: faker.internet.url(),
+                    highlight: false,
+                    options: [],
+                    images: []
                 }
 
                 request
@@ -180,6 +183,71 @@ describe('FUNCTIONAL API - ACTIVITY', function(){
                         done()
                     })
             })
+
+            it('should response ok (add image)', function (done) {
+                request
+                    .post(`/activity/${validActivity.slug}/image`)
+                    .set('Authorization', validToken)
+                    .attach('image', __dirname + '/../fixtures/duruelo.png')
+                    .expect(200)
+                    .end(function (err, res) {
+                        expect(err).to.be.null
+                        expect(res.body.status).to.be.true
+                        validActivity.images = res.body.data.images
+                        expect(res.body.data).to.be.deep.equal(validActivity)
+                        expect(res.body.data.images.length).to.be.deep.equal(1)
+                        done()
+                    })
+            })
+
+            it('should response ok (exists 1 with 1 image)', function (done) {
+                request
+                    .get('/activity')
+                    .expect(200)
+                    .end(function (err, res) {
+                        expect(err).to.be.null
+                        expect(res.body.status).to.be.true
+                        expect(res.body.data).to.have.property('activities')
+                        expect(res.body.data.activities).to.be.an('Array')
+                        expect(res.body.data.activities.length).to.be.equal(1)
+                        expect(res.body.data.activities[0]).to.be.deep.equal(validActivity)
+                        expect(res.body.data.activities[0].images.length).to.be.equal(1)
+                        expect(res.body.data).to.have.property('pagination')
+                        expect(res.body.data.pagination).to.be.deep.equal(pagination)
+                        done()
+                    })
+            })
+
+            it('should response ok (remove image)', function (done) {
+                request
+                    .delete(`/activity/${validActivity.slug}/image`)
+                    .set('Authorization', validToken)
+                    .send({image: validActivity.images[0]})
+                    .expect(200)
+                    .end(function (err, res) {
+                        expect(err).to.be.null
+                        expect(res.body.status).to.be.true
+                        validActivity.images = []
+                        expect(res.body.data).to.be.deep.equal(validActivity)
+                        done()
+                    })
+            })
+
+            it('should response ok (exists 1 with 0 images)', function (done) {
+                request
+                    .get('/activity')
+                    .expect(200)
+                    .end(function (err, res) {
+                        expect(err).to.be.null
+                        expect(res.body.status).to.be.true
+                        expect(res.body.data).to.have.property('activities')
+                        expect(res.body.data.activities).to.be.an('Array')
+                        expect(res.body.data.activities[0]).to.be.deep.equal(validActivity)
+                        expect(res.body.data).to.have.property('pagination')
+                        expect(res.body.data.pagination).to.be.deep.equal(pagination)
+                        done()
+                    })
+            })
         }
 
         it('should response ok (add Activity without image)', function (done) {
@@ -193,7 +261,10 @@ describe('FUNCTIONAL API - ACTIVITY', function(){
                 phone: faker.phone.phoneNumber(),
                 email: faker.internet.email(),
                 web: faker.internet.url(),
-                image: null
+                image: null,
+                highlight: false,
+                options: [],
+                images: []
             }
 
             request
@@ -207,7 +278,6 @@ describe('FUNCTIONAL API - ACTIVITY', function(){
                     validActivity.slug = slugify(validActivity.name)
                     expect(res.body.data).to.have.property('id')
                     validActivity.id = res.body.data.id
-                    validActivity.options = []
                     expect(res.body.data).to.be.deep.equal(validActivity)
                     done()
                 })

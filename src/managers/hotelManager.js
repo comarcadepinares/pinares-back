@@ -63,6 +63,7 @@ module.exports = {
             type,
             description,
             image,
+            images: [],
             location,
             address,
             phone,
@@ -148,7 +149,33 @@ module.exports = {
         return true
     },
 
+    async addImage (hotel, image) {
+        try {
+            image = await processMediaUpload.preprocessImages([image])
+            // upload to S3
+            image = await processMediaUpload.images(image, parameters.AWS.folder)
+            image = image[0]
+        } catch (error) {
+            throw new exception.UploadingImagesError()
+        }
+
+        hotel.images.push(image)
+        hotel.images = hotel.images
+        await hotel.save()
+
+        return hotel.getPublicInfo()
+    },
+
+    async removeImage (hotel, { image }) {
+        if (image) {
+            hotel.images = hotel.images.filter(i => i !== image)
+            await hotel.save()
+        }
+
+        return hotel.getPublicInfo()
+    },
+
     getTypes () {
         return { types: Hotel.TYPES }
-    },
+    }
 }

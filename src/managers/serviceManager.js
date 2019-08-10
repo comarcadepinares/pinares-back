@@ -63,6 +63,7 @@ module.exports = {
             type,
             description,
             image,
+            images: [],
             location,
             address,
             phone,
@@ -146,6 +147,32 @@ module.exports = {
         service.save()
 
         return true
+    },
+
+    async addImage (service, image) {
+        try {
+            image = await processMediaUpload.preprocessImages([image])
+            // upload to S3
+            image = await processMediaUpload.images(image, parameters.AWS.folder)
+            image = image[0]
+        } catch (error) {
+            throw new exception.UploadingImagesError()
+        }
+
+        service.images.push(image)
+        service.images = service.images
+        await service.save()
+
+        return service.getPublicInfo()
+    },
+
+    async removeImage (service, { image }) {
+        if (image) {
+            service.images = service.images.filter(i => i !== image)
+            await service.save()
+        }
+
+        return service.getPublicInfo()
     },
 
     getTypes () {

@@ -37,6 +37,24 @@ module.exports = {
         next()
     },
 
+    async addImage (req, res, next) {
+        try {
+            res.locals.response = await hotelManager.addImage(res.locals.hotel, req.file)
+            next()
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    async removeImage (req, res, next) {
+        try {
+            res.locals.response = await hotelManager.removeImage(res.locals.hotel, req.body)
+            next()
+        } catch (error) {
+            next(error)
+        }
+    },
+
     getTypes (req, res, next) {
         res.locals.response = hotelManager.getTypes()
         next()

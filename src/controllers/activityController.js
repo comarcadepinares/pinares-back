@@ -35,5 +35,23 @@ module.exports = {
     async remove (req, res, next) {
         res.locals.response = await activityManager.remove(res.locals.activity)
         next()
+    },
+
+    async addImage (req, res, next) {
+        try {
+            res.locals.response = await activityManager.addImage(res.locals.activity, req.file)
+            next()
+        } catch (error) {
+            next(error)
+        }
+    },
+
+    async removeImage (req, res, next) {
+        try {
+            res.locals.response = await activityManager.removeImage(res.locals.activity, req.body)
+            next()
+        } catch (error) {
+            next(error)
+        }
     }
 }
