@@ -105,9 +105,13 @@ module.exports = (sequelize, DataTypes) => {
     Object.assign(ActivityOption.prototype, {
         getPublicInfo () {
             const location = this.location
-            delete location.crs
+            if (location) {
+                delete location.crs
+            }
             const journey = this.journey
-            delete journey.crs
+            if (journey) {
+                delete journey.crs
+            }
 
             let publicInfo = {
                 id: this.id,
