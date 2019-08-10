@@ -30,6 +30,22 @@ module.exports = {
             throw new exception.ValidationActivityOption()
         }
 
+        if (typeof schedule === 'string') {
+            try {
+                schedule = JSON.parse(schedule)
+            } catch (error) {
+                throw new exception.ValueError('Wrong schedule parameter')
+            }
+        }
+
+        if (people && typeof people === 'string') {
+            try {
+                people = JSON.parse(people)
+            } catch (error) {
+                throw new exception.ValueError('Wrong people parameter')
+            }
+        }
+
         if (location) {
             if (typeof location === 'string') {
                 try {
@@ -87,6 +103,22 @@ module.exports = {
     async update (activityOption, { schedule, price, priceType, location, journey, duration, description, recomendations, people, minPax, maxPax }) {
         if (!price || !priceType) {
             throw new exception.ValidationActivityOption()
+        }
+
+        if (typeof schedule === 'string') {
+            try {
+                schedule = JSON.parse(schedule)
+            } catch (error) {
+                throw new exception.ValueError('Wrong schedule parameter')
+            }
+        }
+
+        if (people && typeof people === 'string') {
+            try {
+                people = JSON.parse(people)
+            } catch (error) {
+                throw new exception.ValueError('Wrong people parameter')
+            }
         }
 
         if (location) {
