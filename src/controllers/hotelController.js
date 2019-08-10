@@ -2,10 +2,11 @@
 
 const hotelManager = require('../managers/hotelManager')
 const pagination = require('../services/pagination')
+const filterByQuery = require('../services/filterByQuery')
 
 module.exports = {
     async getAll (req, res, next) {
-        res.locals.response = await hotelManager.getAll(pagination(req.query))
+        res.locals.response = await hotelManager.getAll(pagination(req.query), filterByQuery(req.query))
         next()
     },
 

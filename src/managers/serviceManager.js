@@ -11,8 +11,8 @@ const parameters = requireRoot('../parameters')
 const debug = require('debug')('app:managers:service')
 
 module.exports = {
-    async getAll (pagination) {
-        const services = await Service.getAll(pagination)
+    async getAll (pagination, filter) {
+        const services = await Service.getAll(pagination, filter)
         const servicesInfo = await Promise.all(
             Promise.map(services, async function (service) {
                 return service.getPublicInfo()

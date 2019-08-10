@@ -2,10 +2,11 @@
 
 const serviceManager = require('../managers/serviceManager')
 const pagination = require('../services/pagination')
+const filterByQuery = require('../services/filterByQuery')
 
 module.exports = {
     async getAll (req, res, next) {
-        res.locals.response = await serviceManager.getAll(pagination(req.query))
+        res.locals.response = await serviceManager.getAll(pagination(req.query), filterByQuery(req.query))
         next()
     },
 

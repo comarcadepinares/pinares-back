@@ -390,6 +390,37 @@ describe('FUNCTIONAL API - SERVICE', function(){
                 })
         })
 
+        it('get all with filter', function (done) {
+            request
+                .get(`/service?highlight=${validService.highlight}`)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.have.property('services')
+                    expect(res.body.data.services).to.be.an('Array')
+                    expect(res.body.data.services[0]).to.be.deep.equal(validService)
+                    expect(res.body.data).to.have.property('pagination')
+                    expect(res.body.data.pagination).to.be.deep.equal(pagination)
+                    done()
+                })
+        })
+
+        it('get all with filter empty', function (done) {
+            request
+                .get(`/service?highlight=${!validService.highlight}`)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.have.property('services')
+                    expect(res.body.data.services).to.be.an('Array').to.be.empty
+                    expect(res.body.data).to.have.property('pagination')
+                    expect(res.body.data.pagination).to.be.deep.equal(pagination)
+                    done()
+                })
+        })
+
         it('should response ok (content exists)', function (done) {
             request
                 .get('/service/' + validService.slug)

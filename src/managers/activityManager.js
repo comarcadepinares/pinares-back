@@ -13,8 +13,8 @@ const parameters = requireRoot('../parameters')
 const debug = require('debug')('app:managers:activity')
 
 module.exports = {
-    async getAll (pagination) {
-        const activities = await Activity.getAll(pagination)
+    async getAll (pagination, filter) {
+        const activities = await Activity.getAll(pagination, filter)
         const activitiesInfo = await Promise.all(
             Promise.map(activities, async function (activity) {
                 return await getActivityWithOptions(activity)

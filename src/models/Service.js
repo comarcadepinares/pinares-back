@@ -46,8 +46,8 @@ module.exports = (sequelize, DataTypes) => {
         Service.belongsTo(models.Town)
     }
 
-    Service.getAll = function ({ offset, limit }) {
-        return this.findAll({ offset, limit })
+    Service.getAll = function ({ offset, limit }, where) {
+        return this.findAll({ offset, limit, where })
     }
 
     Service.getOneBySlug = function (slug) {

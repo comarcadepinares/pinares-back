@@ -11,8 +11,8 @@ const parameters = requireRoot('../parameters')
 const debug = require('debug')('app:managers:restaurant')
 
 module.exports = {
-    async getAll (pagination) {
-        const restaurants = await Restaurant.getAll(pagination)
+    async getAll (pagination, filter) {
+        const restaurants = await Restaurant.getAll(pagination, filter)
         const restaurantsInfo = await Promise.all(
             Promise.map(restaurants, async function (restaurant) {
                 return restaurant.getPublicInfo()

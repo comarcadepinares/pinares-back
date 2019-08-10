@@ -45,8 +45,8 @@ module.exports = (sequelize, DataTypes) => {
         Hotel.belongsTo(models.Town)
     }
 
-    Hotel.getAll = function ({ offset, limit }) {
-        return this.findAll({ offset, limit })
+    Hotel.getAll = function ({ offset, limit }, where) {
+        return this.findAll({ offset, limit, where })
     }
 
     Hotel.getOneBySlug = function (slug) {

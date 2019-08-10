@@ -36,8 +36,8 @@ module.exports = (sequelize, DataTypes) => {
         Activity.hasMany(models.ActivityOption)
     }
 
-    Activity.getAll = function ({ offset, limit }) {
-        return this.findAll({ offset, limit })
+    Activity.getAll = function ({ offset, limit }, where) {
+        return this.findAll({ offset, limit, where })
     }
 
     Activity.getOneBySlug = function (slug) {

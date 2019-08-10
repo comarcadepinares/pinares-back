@@ -2,10 +2,11 @@
 
 const restaurantManager = require('../managers/restaurantManager')
 const pagination = require('../services/pagination')
+const filterByQuery = require('../services/filterByQuery')
 
 module.exports = {
     async getAll (req, res, next) {
-        res.locals.response = await restaurantManager.getAll(pagination(req.query))
+        res.locals.response = await restaurantManager.getAll(pagination(req.query), filterByQuery(req.query))
         next()
     },
 
