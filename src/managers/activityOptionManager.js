@@ -3,6 +3,9 @@
 const Promise = require('bluebird')
 
 const ActivityOption = require('../appManager').models.ActivityOption
+const ActivityPoint = require('../appManager').models.ActivityPoint
+const ActivityLine = require('../appManager').models.ActivityLine
+
 const { addSRID } = require('../services/geom')
 const exception = require('../services/customExceptions')
 const debug = require('debug')('app:managers:activityOption')
@@ -25,7 +28,7 @@ module.exports = {
         }
     },
 
-    async create (user, activity, { schedule, price, priceType, location, journey, duration, description, recomendations, people, minPax, maxPax }) {
+    async create (user, activity, { schedule, price, priceType, location, duration, description, recomendations, people, minPax, maxPax }) {
         if (!price || !priceType) {
             throw new exception.ValidationActivityOption()
         }
@@ -58,24 +61,11 @@ module.exports = {
             location = addSRID(location)
         }
 
-        if (journey) {
-            if (typeof journey === 'string') {
-                try {
-                    journey = JSON.parse(journey)
-                } catch (error) {
-                    throw new exception.ValueError('Wrong journey parameter')
-                }
-            }
-
-            journey = addSRID(journey)
-        }
-
         let activityOption = new ActivityOption({
             schedule,
             price,
             priceType,
             location,
-            journey,
             duration,
             description,
             recomendations,
@@ -100,7 +90,7 @@ module.exports = {
         return activityOption.getPublicInfo()
     },
 
-    async update (activityOption, { schedule, price, priceType, location, journey, duration, description, recomendations, people, minPax, maxPax }) {
+    async update (activityOption, { schedule, price, priceType, location, duration, description, recomendations, people, minPax, maxPax }) {
         if (!price || !priceType) {
             throw new exception.ValidationActivityOption()
         }
@@ -133,23 +123,10 @@ module.exports = {
             location = addSRID(location)
         }
 
-        if (journey) {
-            if (typeof journey === 'string') {
-                try {
-                    journey = JSON.parse(journey)
-                } catch (error) {
-                    throw new exception.ValueError('Wrong journey parameter')
-                }
-            }
-
-            journey = addSRID(journey)
-        }
-
         activityOption.schedule = schedule
         activityOption.price = price
         activityOption.priceType = priceType
         activityOption.location = location
-        activityOption.journey = journey
         activityOption.duration = duration
         activityOption.description = description
         activityOption.recomendations = recomendations
@@ -176,5 +153,76 @@ module.exports = {
         activityOption.save()
 
         return true
-    }
+    },
+
+    async addLine (activityOption, activity, {line, name}) {
+        if (typeof line === 'string') {
+            try {
+                line = JSON.parse(line)
+            } catch (error) {
+                throw new exception.ValueError('Wrong line parameter')
+            }
+        }
+
+        const activityLine = new ActivityLine({
+            name,
+            line: addSRID(line),
+            userId: user.id,
+            townId: activity.townId,
+            activityId: activity.id,
+            ActivityOptionId: activityOption.id
+        })
+
+        try {
+            activityLine.save()
+        } catch (error) {
+            debug(error)
+            throw new exception.SomethingWasWrong()
+        }
+
+        return activityLine.getPublicInfo()
+    },
+
+    async removeLine (activityLine) {
+        activityLine.removed = true
+        activityLine.save()
+
+        return true
+    },
+
+    async addPoint (activityOption, activity, {point, name}) {
+        if (typeof point === 'string') {
+            try {
+                point = JSON.parse(point)
+            } catch (error) {
+                throw new exception.ValueError('Wrong point parameter')
+            }
+        }
+
+        const activityPoint = new ActivityPoint({
+            name,
+            point: addSRID(point),
+            userId: user.id,
+            townId: activity.townId,
+            activityId: activity.id,
+            ActivityOptionId: activityOption.id
+        })
+
+        try {
+            activityPoint.save()
+        } catch (error) {
+            debug(error)
+            throw new exception.SomethingWasWrong()
+        }
+
+        return activityPoint.getPublicInfo()
+    },
+
+    async removePoint (activityPoint) {
+        activityPoint.removed = true
+        activityPoint.save()
+
+        return true
+    },
 }
+

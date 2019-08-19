@@ -2,6 +2,8 @@
 
 const base = require('./_Base')
 const schedule = require('./_schedule')
+const ActivityPoint = require('./ActivityPoint')
+const ActivityLine = require('./ActivityLine')
 
 const PEOPLE_TYPES = {
     CHILDREN: 'children',
@@ -36,10 +38,6 @@ module.exports = (sequelize, DataTypes) => {
         },
         location: {
             type: DataTypes.GEOMETRY('POINT', 4326),
-            allowNull: true
-        },
-        journey: {
-            type: DataTypes.GEOMETRY('LINESTRING', 4326),
             allowNull: true
         },
         duration: { //in minutes
@@ -86,18 +84,20 @@ module.exports = (sequelize, DataTypes) => {
         ActivityOption.belongsTo(models.User)
         ActivityOption.belongsTo(models.Town)
         ActivityOption.belongsTo(models.Activity)
+        ActivityOption.hasMany(models.ActivityPoint)
+        ActivityOption.hasMany(models.ActivityLine)
     }
 
     ActivityOption.getAll = function ({ offset, limit }) {
-        return this.findAll({ offset, limit })
+        return this.findAll({ offset, limit, include: [ActivityPoint, ActivityLine] })
     }
 
     ActivityOption.getAllByActivityId = function (activityId, { offset, limit } = { offset: 0, limit: 1000}) {
-        return this.findAll({ where: { activityId }, offset, limit })
+        return this.findAll({ where: { activityId }, offset, limit, include: [ActivityPoint, ActivityLine] })
     }
 
     ActivityOption.getOneById = function (id) {
-        return this.findOne({ where: { id } })
+        return this.findOne({ where: { id }, include: [ActivityPoint, ActivityLine] })
     }
 
     ActivityOption.PEOPLE_TYPES = PEOPLE_TYPES
@@ -108,10 +108,6 @@ module.exports = (sequelize, DataTypes) => {
             if (location) {
                 delete location.crs
             }
-            const journey = this.journey
-            if (journey) {
-                delete journey.crs
-            }
 
             let publicInfo = {
                 id: this.id,
@@ -119,7 +115,6 @@ module.exports = (sequelize, DataTypes) => {
                 price: this.price,
                 priceType: this.priceType,
                 location,
-                journey,
                 duration: this.duration,
                 description: this.description,
                 recomendations: this.recomendations,
@@ -131,7 +126,6 @@ module.exports = (sequelize, DataTypes) => {
             return publicInfo
         }
     })
-
 
     return ActivityOption
 }
