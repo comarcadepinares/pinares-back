@@ -39,7 +39,7 @@ module.exports = {
 
     async addLine (req, res, next) {
         try {
-            res.locals.response = await activityOptionManager.addLine(res.locals.activityOption, res.locals.activity, req.body)
+            res.locals.response = await activityOptionManager.addLine(res.locals.user, res.locals.activityOption, res.locals.activity, req.body)
             next()
         } catch (error) {
             next(error)
@@ -57,7 +57,7 @@ module.exports = {
 
     async addPoint (req, res, next) {
         try {
-            res.locals.response = await activityOptionManager.addPoint(res.locals.activityOption, res.locals.activity, req.body)
+            res.locals.response = await activityOptionManager.addPoint(res.locals.user, res.locals.activityOption, res.locals.activity, req.body)
             next()
         } catch (error) {
             next(error)

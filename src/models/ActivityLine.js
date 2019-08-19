@@ -24,6 +24,16 @@ module.exports = (sequelize, DataTypes) => {
                 removed: false,
                 actived: true
             }
+        },
+        hooks: {
+            beforeSave: function (instance) {
+                if (instance.line && !instance.line.crs) {
+                    instance.line.crs = {
+                        type: 'name',
+                        properties: { name: 'EPSG:4326' }
+                    }
+                }
+            }
         }
     })
 

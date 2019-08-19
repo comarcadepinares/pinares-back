@@ -155,7 +155,7 @@ module.exports = {
         return true
     },
 
-    async addLine (activityOption, activity, {line, name}) {
+    async addLine (user, activityOption, activity, {line, name}) {
         if (typeof line === 'string') {
             try {
                 line = JSON.parse(line)
@@ -164,9 +164,9 @@ module.exports = {
             }
         }
 
-        const activityLine = new ActivityLine({
+        let activityLine = new ActivityLine({
             name,
-            line: addSRID(line),
+            line: line,
             userId: user.id,
             townId: activity.townId,
             activityId: activity.id,
@@ -174,7 +174,7 @@ module.exports = {
         })
 
         try {
-            activityLine.save()
+            activityLine = await activityLine.save()
         } catch (error) {
             debug(error)
             throw new exception.SomethingWasWrong()
@@ -190,7 +190,7 @@ module.exports = {
         return true
     },
 
-    async addPoint (activityOption, activity, {point, name}) {
+    async addPoint (user, activityOption, activity, {point, name}) {
         if (typeof point === 'string') {
             try {
                 point = JSON.parse(point)
@@ -199,9 +199,9 @@ module.exports = {
             }
         }
 
-        const activityPoint = new ActivityPoint({
+        let activityPoint = new ActivityPoint({
             name,
-            point: addSRID(point),
+            point: point,
             userId: user.id,
             townId: activity.townId,
             activityId: activity.id,
@@ -209,7 +209,7 @@ module.exports = {
         })
 
         try {
-            activityPoint.save()
+            activityPoint = await activityPoint.save()
         } catch (error) {
             debug(error)
             throw new exception.SomethingWasWrong()

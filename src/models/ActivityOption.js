@@ -2,8 +2,9 @@
 
 const base = require('./_Base')
 const schedule = require('./_schedule')
-const ActivityPoint = require('./ActivityPoint')
-const ActivityLine = require('./ActivityLine')
+const ActivityPoint = require('../appManager').models.ActivityPoint
+const ActivityLine = require('../appManager').models.ActivityLine
+
 
 const PEOPLE_TYPES = {
     CHILDREN: 'children',
@@ -84,20 +85,29 @@ module.exports = (sequelize, DataTypes) => {
         ActivityOption.belongsTo(models.User)
         ActivityOption.belongsTo(models.Town)
         ActivityOption.belongsTo(models.Activity)
-        ActivityOption.hasMany(models.ActivityPoint)
-        ActivityOption.hasMany(models.ActivityLine)
+        ActivityOption.hasMany(models.ActivityPoint, { as: 'points' })
+        ActivityOption.hasMany(models.ActivityLine, { as: 'lines' })
     }
 
     ActivityOption.getAll = function ({ offset, limit }) {
-        return this.findAll({ offset, limit, include: [ActivityPoint, ActivityLine] })
+        return this.findAll({ offset, limit, include: [
+            { association: 'points', required: false },
+            { association: 'lines', required: false }
+        ]})
     }
 
     ActivityOption.getAllByActivityId = function (activityId, { offset, limit } = { offset: 0, limit: 1000}) {
-        return this.findAll({ where: { activityId }, offset, limit, include: [ActivityPoint, ActivityLine] })
+        return this.findAll({ where: { activityId }, offset, limit, include: [
+            { association: 'points', required: false },
+            { association: 'lines', required: false }
+        ]})
     }
 
     ActivityOption.getOneById = function (id) {
-        return this.findOne({ where: { id }, include: [ActivityPoint, ActivityLine] })
+        return this.findOne({ where: { id }, include: [
+            { association: 'points', required: false },
+            { association: 'lines', required: false }
+        ]})
     }
 
     ActivityOption.PEOPLE_TYPES = PEOPLE_TYPES
@@ -120,7 +130,9 @@ module.exports = (sequelize, DataTypes) => {
                 recomendations: this.recomendations,
                 people: this.people,
                 minPax: this.minPax,
-                maxPax: this.maxPax
+                maxPax: this.maxPax,
+                lines: this.lines || [],
+                points: this.points || []
             }
 
             return publicInfo

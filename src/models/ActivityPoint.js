@@ -24,6 +24,16 @@ module.exports = (sequelize, DataTypes) => {
                 removed: false,
                 actived: true
             }
+        },
+        hooks: {
+            beforeSave: function (instance) {
+                if (instance.point && !instance.point.crs) {
+                    instance.point.crs = {
+                        type: 'name',
+                        properties: { name: 'EPSG:4326' }
+                    }
+                }
+            }
         }
     })
 
@@ -38,12 +48,12 @@ module.exports = (sequelize, DataTypes) => {
         return this.findOne({ where: { id } })
     }
 
-    ActivityPoint.getAllByActivityOptionId = function (activityOptionId, { offset, limit } = { offset: 0, limit: 1000}) {
+    ActivityPoint.getAllByActivityOptionId = function (activityOptionId, { offset, limit } = { offset: 0, limit: 1000 }) {
         return this.findAll({ where: { activityOptionId }, offset, limit })
     }
 
     Object.assign(ActivityPoint.prototype, {
-        getPublicInfo () {
+        getPublicInfo() {
             const point = this.point
             delete point.crs
 
