@@ -15,6 +15,8 @@ let validTown
 let validActivityType
 let validActivity
 let validActivityOption
+let validLine
+let validPoint
 const pagination = {
     page: 1,
     limit: 25
@@ -189,17 +191,14 @@ describe('FUNCTIONAL API - ACTIVITY OPTION', function(){
                 price: parseFloat(faker.finance.amount()),
                 priceType: 1,
                 location: getPoint(faker.address.latitude(), faker.address.longitude()),
-                journey: getLine(
-                    faker.address.latitude(), faker.address.longitude(),
-                    faker.address.latitude(), faker.address.longitude(),
-                    faker.address.latitude(), faker.address.longitude()
-                ),
                 duration: faker.random.number(),
                 description: faker.lorem.sentence(),
                 recomendations: faker.lorem.sentence(),
                 people: [ActivityOption.PEOPLE_TYPES.CHILDREN, ActivityOption.PEOPLE_TYPES.OLD],
                 minPax: faker.random.number(),
-                maxPax: faker.random.number()
+                maxPax: faker.random.number(),
+                lines: [],
+                points: []
             }
 
             request
@@ -324,7 +323,114 @@ describe('FUNCTIONAL API - ACTIVITY OPTION', function(){
                 })
         })
 
-        it('should fail deleting activity without token', function (done) {
+        it('add line', function (done) {
+            validLine = {
+                name: faker.lorem.sentence(),
+                line: getLine(
+                    faker.address.latitude(), faker.address.longitude(),
+                    faker.address.latitude(), faker.address.longitude(),
+                    faker.address.latitude(), faker.address.longitude()
+                )
+            }
+
+            request
+                .post(`/activity/${validActivity.slug}/option/${validActivityOption.id}/line`)
+                .set('Authorization', validToken)
+                .send(validLine)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    validLine.id = res.body.data.id
+                    validActivityOption.lines = [validLine]
+                    expect(res.body.data).to.be.deep.equal(validLine)
+                    done()
+                })
+        })
+
+        it('add point', function (done) {
+            validPoint = {
+                name: faker.lorem.sentence(),
+                point: getPoint(faker.address.latitude(), faker.address.longitude())
+            }
+
+
+            request
+                .post(`/activity/${validActivity.slug}/option/${validActivityOption.id}/point`)
+                .set('Authorization', validToken)
+                .send(validPoint)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    validPoint.id = res.body.data.id
+                    validActivityOption.points = [validPoint]
+                    expect(res.body.data).to.be.deep.equal(validPoint)
+                    done()
+                })
+        })
+
+        it('exists 1 with line and point', function (done) {
+            request
+                .get(`/activity/${validActivity.slug}/option`)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.have.property('activityOptions')
+                    expect(res.body.data.activityOptions).to.be.an('Array')
+                    expect(res.body.data.activityOptions[0]).to.be.deep.equal(validActivityOption)
+                    expect(res.body.data).to.have.property('pagination')
+                    expect(res.body.data.pagination).to.be.deep.equal(pagination)
+                    done()
+                })
+        })
+
+        it('remove line', function (done) {
+            request
+                .delete(`/activity/${validActivity.slug}/option/${validActivityOption.id}/line/${validActivityOption.lines[0].id}`)
+                .set('Authorization', validToken)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.be.true
+                    validActivityOption.lines = []
+                    done()
+                })
+        })
+
+        it('remove point', function (done) {
+            request
+                .delete(`/activity/${validActivity.slug}/option/${validActivityOption.id}/point/${validActivityOption.points[0].id}`)
+                .set('Authorization', validToken)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.be.true
+                    validActivityOption.points = []
+                    done()
+                })
+        })
+
+        it('exists 1 without lines and points', function (done) {
+            request
+                .get(`/activity/${validActivity.slug}/option`)
+                .expect(200)
+                .end(function (err, res) {
+                    expect(err).to.be.null
+                    expect(res.body.status).to.be.true
+                    expect(res.body.data).to.have.property('activityOptions')
+                    expect(res.body.data.activityOptions).to.be.an('Array')
+                    expect(res.body.data.activityOptions[0]).to.be.deep.equal(validActivityOption)
+                    expect(res.body.data).to.have.property('pagination')
+                    expect(res.body.data.pagination).to.be.deep.equal(pagination)
+                    done()
+                })
+        })
+
+        it('should fail deleting activity option without token', function (done) {
             const error = new exception.ValidationPublicKeyFailed()
 
             request
@@ -343,7 +449,7 @@ describe('FUNCTIONAL API - ACTIVITY OPTION', function(){
                 })
         })
 
-        it('should response ok (remove activity)', function (done) {
+        it('should response ok (remove activity option)', function (done) {
             request
                 .delete(`/activity/${validActivity.slug}/option/${validActivityOption.id}`)
                 .set('Authorization', validToken)
@@ -356,7 +462,7 @@ describe('FUNCTIONAL API - ACTIVITY OPTION', function(){
                 })
         })
 
-        it('should response ko (getting removed content)', function (done) {
+        it('should response ko (getting removed activity option)', function (done) {
             let error = new exception.EntityNotExists()
 
             request
@@ -375,7 +481,7 @@ describe('FUNCTIONAL API - ACTIVITY OPTION', function(){
                 })
         })
 
-        it('should response ok (get activityOptions after remove existing content)', function (done) {
+        it('should response ok (get activityOptions after removing one)', function (done) {
             request
                 .get(`/activity/${validActivity.slug}/option`)
                 .expect(200)

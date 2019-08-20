@@ -91,22 +91,22 @@ module.exports = (sequelize, DataTypes) => {
 
     ActivityOption.getAll = function ({ offset, limit }) {
         return this.findAll({ offset, limit, include: [
-            { association: 'points', required: false },
-            { association: 'lines', required: false }
+            { association: 'points', required: false, attributes: ['id', 'name', 'point'] },
+            { association: 'lines', required: false, attributes: ['id', 'name', 'line'] }
         ]})
     }
 
     ActivityOption.getAllByActivityId = function (activityId, { offset, limit } = { offset: 0, limit: 1000}) {
         return this.findAll({ where: { activityId }, offset, limit, include: [
-            { association: 'points', required: false },
-            { association: 'lines', required: false }
+            { association: 'points', required: false, attributes: ['id', 'name', 'point'] },
+            { association: 'lines', required: false, attributes: ['id', 'name', 'line'] }
         ]})
     }
 
     ActivityOption.getOneById = function (id) {
         return this.findOne({ where: { id }, include: [
-            { association: 'points', required: false },
-            { association: 'lines', required: false }
+            { association: 'points', required: false, attributes: ['id', 'name', 'point'] },
+            { association: 'lines', required: false, attributes: ['id', 'name', 'line'] }
         ]})
     }
 

@@ -170,7 +170,7 @@ module.exports = {
             userId: user.id,
             townId: activity.townId,
             activityId: activity.id,
-            ActivityOptionId: activityOption.id
+            activityOptionId: activityOption.id
         })
 
         try {
@@ -205,7 +205,7 @@ module.exports = {
             userId: user.id,
             townId: activity.townId,
             activityId: activity.id,
-            ActivityOptionId: activityOption.id
+            activityOptionId: activityOption.id
         })
 
         try {

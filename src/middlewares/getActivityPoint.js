@@ -5,7 +5,7 @@ const exception = require('../services/customExceptions')
 
 module.exports = function getActivityPoint (validateUser = false) {
     return async function (req, res, next) {
-        const activityPoint = await ActivityPoint.getOneById(parseInt(req.params.lineId) || 0)
+        const activityPoint = await ActivityPoint.getOneById(parseInt(req.params.pointId) || 0)
 
         if (!activityPoint || activityPoint.activityId !== res.locals.activity.id) {
             return next(new exception.EntityNotExists())
